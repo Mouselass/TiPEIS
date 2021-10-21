@@ -147,6 +147,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormAgent.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAgent.Designer.cs">
+      <DependentUpon>FormAgent.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormAgents.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAgents.Designer.cs">
+      <DependentUpon>FormAgents.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCounterpartyLender.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCounterpartyLender.Designer.cs">
+      <DependentUpon>FormCounterpartyLender.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormCounterpartyLenders.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCounterpartyLenders.Designer.cs">
+      <DependentUpon>FormCounterpartyLenders.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLoanAgreement.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLoanAgreement.Designer.cs">
+      <DependentUpon>FormLoanAgreement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormLoanAgreements.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormLoanAgreements.Designer.cs">
+      <DependentUpon>FormLoanAgreements.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +191,24 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FormAgent.resx">
+      <DependentUpon>FormAgent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormAgents.resx">
+      <DependentUpon>FormAgents.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCounterpartyLender.resx">
+      <DependentUpon>FormCounterpartyLender.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormCounterpartyLenders.resx">
+      <DependentUpon>FormCounterpartyLenders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLoanAgreement.resx">
+      <DependentUpon>FormLoanAgreement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormLoanAgreements.resx">
+      <DependentUpon>FormLoanAgreements.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>

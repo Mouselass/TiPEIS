@@ -5,6 +5,7 @@ using Unity;
 using Unity.Lifetime;
 using LoanAgreementBusinessLogic.Interfaces;
 using LoanAgreementBusinessLogic.BusinessLogic;
+using LoanAgreementDatabase.Implements;
 
 namespace LoanAgreement
 {
@@ -26,7 +27,13 @@ namespace LoanAgreement
         {
             var currentContainer = new UnityContainer();
             currentContainer.RegisterType<IChartOfAccountsStorage, ChartOfAccountsStorage>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<ICounterpartyLenderStorage, CounterpartyLenderStorage>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<IAgentStorage, AgentStorage>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<ILoanAgreementStorage, LoanAgreementStorage>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<ChartOfAccountsLogic>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<CounterpartyLenderLogic>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<AgentLogic>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<LoanAgreementLogic>(new HierarchicalLifetimeManager());
             return currentContainer;
         }
     }

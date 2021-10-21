@@ -15,9 +15,9 @@ namespace LoanAgreementDatabase.Models
         }
 
         public int Id { get; set; }
-        public double Percent1 { get; set; }
-        public double Percent2 { get; set; }
-        public double Sumofloan { get; set; }
+        public decimal Percent1 { get; set; }
+        public decimal Percent2 { get; set; }
+        public decimal Sumofloan { get; set; }
         public DateTime Dateofconclusion { get; set; }
         public DateTime Dateofmaturity { get; set; }
         public int Counterpartylenderid { get; set; }

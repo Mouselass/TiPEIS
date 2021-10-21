@@ -19,7 +19,7 @@ namespace LoanAgreementDatabase.Models
         public string Subcontocredit2 { get; set; }
         public string Subcontocredit3 { get; set; }
         public int Amount { get; set; }
-        public double Sum { get; set; }
+        public decimal Sum { get; set; }
         public int Operationid { get; set; }
         public string Comment { get; set; }
         public DateTime Date { get; set; }

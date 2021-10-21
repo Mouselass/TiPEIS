@@ -31,6 +31,7 @@ namespace LoanAgreementDatabase
         {
             if (!optionsBuilder.IsConfigured)
             {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=Ivan");
             }
         }
@@ -110,11 +111,17 @@ namespace LoanAgreementDatabase
                     .HasColumnName("dateofmaturity")
                     .HasColumnType("date");
 
-                entity.Property(e => e.Percent1).HasColumnName("percent1");
+                entity.Property(e => e.Percent1)
+                    .HasColumnName("percent1")
+                    .HasColumnType("numeric(15,2)");
 
-                entity.Property(e => e.Percent2).HasColumnName("percent2");
+                entity.Property(e => e.Percent2)
+                    .HasColumnName("percent2")
+                    .HasColumnType("numeric(15,2)");
 
-                entity.Property(e => e.Sumofloan).HasColumnName("sumofloan");
+                entity.Property(e => e.Sumofloan)
+                    .HasColumnName("sumofloan")
+                    .HasColumnType("numeric(15,2)");
 
                 entity.HasOne(d => d.Agent)
                     .WithMany(p => p.Loanagreement)
@@ -146,7 +153,9 @@ namespace LoanAgreementDatabase
                     .HasColumnName("operationtype")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.Sum).HasColumnName("sum");
+                entity.Property(e => e.Sum)
+                    .HasColumnName("sum")
+                    .HasColumnType("numeric(15,2)");
 
                 entity.HasOne(d => d.Loanagreement)
                     .WithMany(p => p.Operation)
@@ -201,7 +210,9 @@ namespace LoanAgreementDatabase
                     .HasColumnName("subcontodebit3")
                     .HasMaxLength(255);
 
-                entity.Property(e => e.Sum).HasColumnName("sum");
+                entity.Property(e => e.Sum)
+                    .HasColumnName("sum")
+                    .HasColumnType("numeric(15,2)");
 
                 entity.HasOne(d => d.CreditaccountNavigation)
                     .WithMany(p => p.PostingjournalCreditaccountNavigation)

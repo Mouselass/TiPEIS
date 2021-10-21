@@ -72,18 +72,21 @@ namespace LoanAgreement
             this.контрагентызаимодавцыToolStripMenuItem.Name = "контрагентызаимодавцыToolStripMenuItem";
             this.контрагентызаимодавцыToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.контрагентызаимодавцыToolStripMenuItem.Text = "Контрагенты-заимодавцы";
+            this.контрагентызаимодавцыToolStripMenuItem.Click += new System.EventHandler(this.контрагентызаимодавцыToolStripMenuItem_Click);
             // 
             // агентыToolStripMenuItem
             // 
             this.агентыToolStripMenuItem.Name = "агентыToolStripMenuItem";
             this.агентыToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.агентыToolStripMenuItem.Text = "Агенты";
+            this.агентыToolStripMenuItem.Click += new System.EventHandler(this.агентыToolStripMenuItem_Click);
             // 
             // договорыЗаймаToolStripMenuItem
             // 
             this.договорыЗаймаToolStripMenuItem.Name = "договорыЗаймаToolStripMenuItem";
             this.договорыЗаймаToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.договорыЗаймаToolStripMenuItem.Text = "Договоры займа";
+            this.договорыЗаймаToolStripMenuItem.Click += new System.EventHandler(this.договорыЗаймаToolStripMenuItem_Click);
             // 
             // журналОперацийToolStripMenuItem
             // 

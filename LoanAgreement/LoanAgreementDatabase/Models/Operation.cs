@@ -17,7 +17,7 @@ namespace LoanAgreementDatabase.Models
         public int Id { get; set; }
         public string Operationtype { get; set; }
         public DateTime Dateofoperation { get; set; }
-        public double Sum { get; set; }
+        public decimal Sum { get; set; }
         public int Loanagreementid { get; set; }
 
         public virtual Loanagreement Loanagreement { get; set; }
