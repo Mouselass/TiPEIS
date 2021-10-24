@@ -4,6 +4,7 @@ using LoanAgreementBusinessLogic.ViewModels;
 using System;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace LoanAgreement
 {
@@ -87,26 +88,15 @@ namespace LoanAgreement
                 return;
             }
 
-            int numPercent1 = 0;
-            bool flagPercent1 = false;
             foreach (char c in textBoxPercent1.Text)
             {
                 if (!char.IsNumber(c) && !(c == ','))
                 {
                     MessageBox.Show("Некорректные данные процента1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
-                }
-                if (flagPercent1 && !(c == ','))
-                {
-                    numPercent1 += 1;
-                }
-                if ((c == ',') || (c == '.'))
-                {
-                    flagPercent1 = true;
-                }
-               
+                }              
             }
-            if (numPercent1 != 2)
+            if (!Regex.IsMatch(textBoxPercent1.Text, @"[0-9]{1,3}[,][0-9]{2}\z"))
             {
                 MessageBox.Show("Процент1 должен содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -122,9 +112,6 @@ namespace LoanAgreement
                 MessageBox.Show("Заполните процент2", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            int numPercent2 = 0;
-            bool flagPercent2 = false;
             foreach (char c in textBoxPercent2.Text)
             {
                 if (!char.IsNumber(c) && !(c == ','))
@@ -132,16 +119,8 @@ namespace LoanAgreement
                     MessageBox.Show("Некорректные данные процента2", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                if (flagPercent2 && !(c == ','))
-                {
-                    numPercent2 += 1;
-                }
-                if ((c == ',') || (c == '.'))
-                {
-                    flagPercent2 = true;
-                }
             }
-            if (numPercent2 != 2)
+            if (!Regex.IsMatch(textBoxPercent2.Text, @"[0-9]{1,3}[,][0-9]{2}\z"))
             {
                 MessageBox.Show("Процент2 должен содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -158,8 +137,6 @@ namespace LoanAgreement
                 return;
             }
 
-            int numSum = 0;
-            bool flagSum = false;
             foreach (char c in textBoxSum.Text)
             {
                 if (!char.IsNumber(c) && !(c == ','))
@@ -167,16 +144,8 @@ namespace LoanAgreement
                     MessageBox.Show("Некорректные данные суммы", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                if (flagSum && !(c == ','))
-                {
-                    numSum += 1;
-                }
-                if ((c == ',') || (c == '.'))
-                {
-                    flagSum = true;
-                }
             }
-            if (numSum != 2)
+            if (!Regex.IsMatch(textBoxSum.Text, @"[0-9]{1,3}[,][0-9]{2}\z"))
             {
                 MessageBox.Show("Сумма должна содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
