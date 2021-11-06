@@ -22,6 +22,7 @@ namespace LoanAgreementDatabase.Models
         public DateTime Dateofmaturity { get; set; }
         public int Counterpartylenderid { get; set; }
         public int Agentid { get; set; }
+        public decimal? Remainingsumofloan { get; set; }
 
         public virtual Agent Agent { get; set; }
         public virtual Counterpartylender Counterpartylender { get; set; }

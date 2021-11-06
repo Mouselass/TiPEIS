@@ -31,7 +31,6 @@ namespace LoanAgreementDatabase
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=Ivan");
             }
         }
@@ -117,6 +116,10 @@ namespace LoanAgreementDatabase
 
                 entity.Property(e => e.Percent2)
                     .HasColumnName("percent2")
+                    .HasColumnType("numeric(15,2)");
+
+                entity.Property(e => e.Remainingsumofloan)
+                    .HasColumnName("remainingsumofloan")
                     .HasColumnType("numeric(15,2)");
 
                 entity.Property(e => e.Sumofloan)

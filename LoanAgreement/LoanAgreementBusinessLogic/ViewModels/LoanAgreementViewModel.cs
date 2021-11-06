@@ -13,7 +13,7 @@ namespace LoanAgreementBusinessLogic.ViewModels
 
         public int? Agentid { get; set; }
 
-        [DisplayName("Контрагент-заимодавец")]
+        [DisplayName("Контрагент")]
         public string Counterpartylender { get; set; }
 
         [DisplayName("Агент")]
@@ -27,6 +27,8 @@ namespace LoanAgreementBusinessLogic.ViewModels
 
         [DisplayName("Сумма")]
         public decimal Sumofloan { get; set; }
+
+        public decimal? RemainingSumofloan { get; set; }
 
         [DisplayName("Дата заключения договора")]
         public DateTime Dateofconclusion { get; set; }

@@ -25,6 +25,7 @@ namespace LoanAgreementDatabase.Implements
                     Percent1 = rec.Percent1,
                     Percent2 = rec.Percent2,
                     Sumofloan = rec.Sumofloan,
+                    RemainingSumofloan = rec.Remainingsumofloan,
                     Dateofconclusion = rec.Dateofconclusion,
                     Dateofmaturity = rec.Dateofmaturity
                 })
@@ -50,6 +51,7 @@ namespace LoanAgreementDatabase.Implements
                     Percent1 = rec.Percent1,
                     Percent2 = rec.Percent2,
                     Sumofloan = rec.Sumofloan,
+                    RemainingSumofloan = rec.Remainingsumofloan,
                     Dateofconclusion = rec.Dateofconclusion,
                     Dateofmaturity = rec.Dateofmaturity
                 })
@@ -77,6 +79,7 @@ namespace LoanAgreementDatabase.Implements
                     Percent1 = loanAgreement.Percent1,
                     Percent2 = loanAgreement.Percent2,
                     Sumofloan = loanAgreement.Sumofloan,
+                    RemainingSumofloan = loanAgreement.Remainingsumofloan,
                     Dateofconclusion = loanAgreement.Dateofconclusion,
                     Dateofmaturity = loanAgreement.Dateofmaturity
                 } :
@@ -131,6 +134,7 @@ namespace LoanAgreementDatabase.Implements
             loanAgreement.Percent1 = model.Percent1;
             loanAgreement.Percent2 = model.Percent2;
             loanAgreement.Sumofloan = model.Sumofloan;
+            loanAgreement.Remainingsumofloan = Convert.ToDecimal(model.RemainingSumofloan);
             loanAgreement.Dateofconclusion = model.Dateofconclusion;
             loanAgreement.Dateofmaturity = model.Dateofmaturity;
             return loanAgreement;

@@ -21,5 +21,7 @@ namespace LoanAgreementBusinessLogic.BindingModels
         public int? Counterpartylenderid { get; set; }
 
         public int? Agentid { get; set; }
+
+        public decimal? RemainingSumofloan { get; set; }
     }
 }

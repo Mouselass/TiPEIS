@@ -1,6 +1,7 @@
 ﻿using LoanAgreementBusinessLogic.BindingModels;
 using LoanAgreementBusinessLogic.BusinessLogic;
 using LoanAgreementBusinessLogic.ViewModels;
+using LoanAgreementBusinessLogic.Enum;
 using System;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
@@ -14,17 +15,20 @@ namespace LoanAgreement
         private readonly LoanAgreementLogic logic;
         private readonly AgentLogic logicA;
         private readonly CounterpartyLenderLogic logicC;
+        private readonly OperationLogic logicO;
         private int? id;
 
-        public FormLoanAgreement(LoanAgreementLogic logic, AgentLogic logicA, CounterpartyLenderLogic logicC)
+        public FormLoanAgreement(LoanAgreementLogic logic, AgentLogic logicA, CounterpartyLenderLogic logicC, OperationLogic logicO)
         {
             InitializeComponent();
             this.logic = logic;
             this.logicA = logicA;
             this.logicC = logicC;
+            this.logicO = logicO;
         }
 
         LoanAgreementViewModel view;
+        OperationViewModel operation;
 
         private void FormLoanAgreement_Load(object sender, EventArgs e)
         {
@@ -82,6 +86,18 @@ namespace LoanAgreement
 
         private void ButtonSave_Click(object sender, EventArgs e)
         {
+            if (comboBoxAgent.SelectedValue == null)
+            {
+                MessageBox.Show("Выберите агента", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboBoxCounterpartyLender.SelectedValue == null)
+            {
+                MessageBox.Show("Выберите контрагента-заимодавца", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             if (string.IsNullOrEmpty(textBoxPercent1.Text))
             {
                 MessageBox.Show("Заполните процент1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -101,7 +117,7 @@ namespace LoanAgreement
                 MessageBox.Show("Процент1 должен содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (Convert.ToDecimal(textBoxPercent1.Text) > 100 || Convert.ToDecimal(textBoxPercent1.Text) < 0)
+            if (Convert.ToDecimal(textBoxPercent1.Text) > 100 || Convert.ToDecimal(textBoxPercent1.Text) <= 0)
             {
                 MessageBox.Show("Некорретные данные процента1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -125,7 +141,7 @@ namespace LoanAgreement
                 MessageBox.Show("Процент2 должен содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (Convert.ToDecimal(textBoxPercent2.Text) > 100 || Convert.ToDecimal(textBoxPercent2.Text) < 0 || Convert.ToDecimal(textBoxPercent2.Text) >= Convert.ToDecimal(textBoxPercent1.Text))
+            if (Convert.ToDecimal(textBoxPercent2.Text) > 100 || Convert.ToDecimal(textBoxPercent2.Text) <= 0 || Convert.ToDecimal(textBoxPercent2.Text) >= Convert.ToDecimal(textBoxPercent1.Text))
             {
                 MessageBox.Show("Некорретные данные процента2, процент2 меньше процента1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -150,21 +166,9 @@ namespace LoanAgreement
                 MessageBox.Show("Сумма должна содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (Convert.ToDecimal(textBoxSum.Text) < 0)
+            if (Convert.ToDecimal(textBoxSum.Text) <= 0)
             {
                 MessageBox.Show("Некорретные данные суммы", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (comboBoxAgent.SelectedValue == null)
-            {
-                MessageBox.Show("Выберите агента", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (comboBoxCounterpartyLender.SelectedValue == null)
-            {
-                MessageBox.Show("Выберите контрагента-заимодавца", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -174,19 +178,13 @@ namespace LoanAgreement
                 return;
             }
 
-            //if (dateTimePickerDateofconclusion.Value < DateTime.Today)
-            //{
-            //    MessageBox.Show("Неверная дата заключения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    return;
-            //}
-
             if (dateTimePickerDateofmaturity.Value == null)
             {
                 MessageBox.Show("Заполните дату истечения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (dateTimePickerDateofmaturity.Value < DateTime.Today || dateTimePickerDateofmaturity.Value <= dateTimePickerDateofconclusion.Value)
+            if (dateTimePickerDateofmaturity.Value <= dateTimePickerDateofconclusion.Value)
             {
                 MessageBox.Show("Неверная дата истечения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -202,9 +200,25 @@ namespace LoanAgreement
                     Percent1 = Convert.ToDecimal(textBoxPercent1.Text),
                     Percent2 = Convert.ToDecimal(textBoxPercent2.Text),
                     Sumofloan = Convert.ToDecimal(textBoxSum.Text),
+                    RemainingSumofloan = Convert.ToDecimal(textBoxSum.Text),
                     Dateofconclusion = dateTimePickerDateofconclusion.Value,
                     Dateofmaturity = dateTimePickerDateofmaturity.Value
                 });
+
+                view = logic.Read(new LoanAgreementBindingModel { Id = id })?[0];
+
+                operation = logicO.Read(new OperationBindingModel { Loanagreementid = view.Id, Operationtype = "Заключение" })?[0];
+
+                if (operation == null || view.Id != operation.Loanagreementid)
+                {
+                    logicO.CreateOrUpdate(new OperationBindingModel
+                    {
+                        Loanagreementid = view.Id,
+                        Operationtype = OperationType.Заключение.ToString(),
+                        Dateofoperation = dateTimePickerDateofconclusion.Value,
+                        Sum = Convert.ToDecimal(textBoxSum.Text)
+                    });
+                }
 
                 MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 DialogResult = DialogResult.OK;

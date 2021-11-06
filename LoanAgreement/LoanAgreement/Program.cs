@@ -30,10 +30,12 @@ namespace LoanAgreement
             currentContainer.RegisterType<ICounterpartyLenderStorage, CounterpartyLenderStorage>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<IAgentStorage, AgentStorage>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<ILoanAgreementStorage, LoanAgreementStorage>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<IOperationStorage, OperationStorage>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<ChartOfAccountsLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<CounterpartyLenderLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<AgentLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<LoanAgreementLogic>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<OperationLogic>(new HierarchicalLifetimeManager());
             return currentContainer;
         }
     }

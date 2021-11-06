@@ -97,7 +97,7 @@ namespace LoanAgreementDatabase.Implements
                 }
                 else
                 {
-                    throw new Exception("Контрагент-заимодавец не найден");
+                    throw new Exception("Агент не найден");
                 }
             }
         }
