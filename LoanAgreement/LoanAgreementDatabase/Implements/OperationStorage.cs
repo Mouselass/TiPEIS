@@ -37,7 +37,12 @@ namespace LoanAgreementDatabase.Implements
             }
             using (var context = new postgresContext())
             {
-                return context.Operation.Include(rec => rec.Loanagreement).Select(rec => new OperationViewModel
+                return context.Operation.Include(rec => rec.Loanagreement).Where(rec => (!model.DateFrom.HasValue && !model.DateTo.HasValue) ||
+                (model.DateFrom.HasValue && model.DateTo.HasValue && rec.Dateofoperation.Date >= model.DateFrom.Value.Date && rec.Dateofoperation.Date <= model.DateTo.Value.Date 
+                    && !model.ReportLoanagreementid.HasValue) ||
+                    (model.DateFrom.HasValue && model.DateTo.HasValue && rec.Dateofoperation.Date >= model.DateFrom.Value.Date && rec.Dateofoperation.Date <= model.DateTo.Value.Date
+                    && model.ReportLoanagreementid.HasValue && model.ReportLoanagreementid == rec.Loanagreementid))
+                .Select(rec => new OperationViewModel
                 {
                     Id = rec.Id,
                     Loanagreementid = rec.Loanagreementid,

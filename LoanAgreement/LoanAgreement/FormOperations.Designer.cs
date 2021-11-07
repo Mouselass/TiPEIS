@@ -45,12 +45,20 @@ namespace LoanAgreement
             this.textBoxPaymentSum = new System.Windows.Forms.TextBox();
             this.labelRemaining = new System.Windows.Forms.Label();
             this.textBoxRemaining = new System.Windows.Forms.TextBox();
+            this.panel = new System.Windows.Forms.Panel();
+            this.buttonFind = new System.Windows.Forms.Button();
+            this.labelTo = new System.Windows.Forms.Label();
+            this.dateTimePickerTo = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerFrom = new System.Windows.Forms.DateTimePicker();
+            this.labelFrom = new System.Windows.Forms.Label();
+            this.buttonRef = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.panel.SuspendLayout();
             this.SuspendLayout();
             // 
             // buttonDel
             // 
-            this.buttonDel.Location = new System.Drawing.Point(664, 311);
+            this.buttonDel.Location = new System.Drawing.Point(664, 280);
             this.buttonDel.Name = "buttonDel";
             this.buttonDel.Size = new System.Drawing.Size(75, 23);
             this.buttonDel.TabIndex = 29;
@@ -60,7 +68,7 @@ namespace LoanAgreement
             // 
             // buttonUpd
             // 
-            this.buttonUpd.Location = new System.Drawing.Point(664, 268);
+            this.buttonUpd.Location = new System.Drawing.Point(664, 237);
             this.buttonUpd.Name = "buttonUpd";
             this.buttonUpd.Size = new System.Drawing.Size(75, 23);
             this.buttonUpd.TabIndex = 28;
@@ -70,7 +78,7 @@ namespace LoanAgreement
             // 
             // buttonAdd
             // 
-            this.buttonAdd.Location = new System.Drawing.Point(664, 227);
+            this.buttonAdd.Location = new System.Drawing.Point(664, 196);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(75, 23);
             this.buttonAdd.TabIndex = 27;
@@ -82,7 +90,7 @@ namespace LoanAgreement
             // 
             this.dataGridView.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView.Location = new System.Drawing.Point(2, 72);
+            this.dataGridView.Location = new System.Drawing.Point(2, 41);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.RowTemplate.Height = 24;
             this.dataGridView.Size = new System.Drawing.Size(649, 377);
@@ -92,7 +100,7 @@ namespace LoanAgreement
             // 
             this.comboBoxType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxType.FormattingEnabled = true;
-            this.comboBoxType.Location = new System.Drawing.Point(752, 112);
+            this.comboBoxType.Location = new System.Drawing.Point(752, 81);
             this.comboBoxType.Name = "comboBoxType";
             this.comboBoxType.Size = new System.Drawing.Size(170, 21);
             this.comboBoxType.TabIndex = 30;
@@ -101,7 +109,7 @@ namespace LoanAgreement
             // labelType
             // 
             this.labelType.AutoSize = true;
-            this.labelType.Location = new System.Drawing.Point(661, 115);
+            this.labelType.Location = new System.Drawing.Point(661, 84);
             this.labelType.Name = "labelType";
             this.labelType.Size = new System.Drawing.Size(80, 13);
             this.labelType.TabIndex = 31;
@@ -109,7 +117,7 @@ namespace LoanAgreement
             // 
             // dateTimePickerDateofconclusion
             // 
-            this.dateTimePickerDateofconclusion.Location = new System.Drawing.Point(752, 150);
+            this.dateTimePickerDateofconclusion.Location = new System.Drawing.Point(752, 119);
             this.dateTimePickerDateofconclusion.Name = "dateTimePickerDateofconclusion";
             this.dateTimePickerDateofconclusion.Size = new System.Drawing.Size(170, 20);
             this.dateTimePickerDateofconclusion.TabIndex = 41;
@@ -117,7 +125,7 @@ namespace LoanAgreement
             // labelDateofconclusion
             // 
             this.labelDateofconclusion.AutoSize = true;
-            this.labelDateofconclusion.Location = new System.Drawing.Point(661, 156);
+            this.labelDateofconclusion.Location = new System.Drawing.Point(661, 125);
             this.labelDateofconclusion.Name = "labelDateofconclusion";
             this.labelDateofconclusion.Size = new System.Drawing.Size(36, 13);
             this.labelDateofconclusion.TabIndex = 40;
@@ -126,7 +134,7 @@ namespace LoanAgreement
             // labelLoanAgreement
             // 
             this.labelLoanAgreement.AutoSize = true;
-            this.labelLoanAgreement.Location = new System.Drawing.Point(661, 76);
+            this.labelLoanAgreement.Location = new System.Drawing.Point(661, 45);
             this.labelLoanAgreement.Name = "labelLoanAgreement";
             this.labelLoanAgreement.Size = new System.Drawing.Size(54, 13);
             this.labelLoanAgreement.TabIndex = 42;
@@ -136,7 +144,7 @@ namespace LoanAgreement
             // 
             this.comboBoxLoanAgreement.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxLoanAgreement.FormattingEnabled = true;
-            this.comboBoxLoanAgreement.Location = new System.Drawing.Point(752, 73);
+            this.comboBoxLoanAgreement.Location = new System.Drawing.Point(752, 42);
             this.comboBoxLoanAgreement.Name = "comboBoxLoanAgreement";
             this.comboBoxLoanAgreement.Size = new System.Drawing.Size(170, 21);
             this.comboBoxLoanAgreement.TabIndex = 43;
@@ -146,7 +154,7 @@ namespace LoanAgreement
             // labelSum
             // 
             this.labelSum.AutoSize = true;
-            this.labelSum.Location = new System.Drawing.Point(661, 189);
+            this.labelSum.Location = new System.Drawing.Point(661, 158);
             this.labelSum.Name = "labelSum";
             this.labelSum.Size = new System.Drawing.Size(44, 13);
             this.labelSum.TabIndex = 44;
@@ -154,7 +162,7 @@ namespace LoanAgreement
             // 
             // textBoxSum
             // 
-            this.textBoxSum.Location = new System.Drawing.Point(752, 189);
+            this.textBoxSum.Location = new System.Drawing.Point(752, 158);
             this.textBoxSum.Name = "textBoxSum";
             this.textBoxSum.ReadOnly = true;
             this.textBoxSum.Size = new System.Drawing.Size(170, 20);
@@ -163,7 +171,7 @@ namespace LoanAgreement
             // labelPaymentSum
             // 
             this.labelPaymentSum.AutoSize = true;
-            this.labelPaymentSum.Location = new System.Drawing.Point(794, 227);
+            this.labelPaymentSum.Location = new System.Drawing.Point(794, 196);
             this.labelPaymentSum.Name = "labelPaymentSum";
             this.labelPaymentSum.Size = new System.Drawing.Size(111, 13);
             this.labelPaymentSum.TabIndex = 46;
@@ -172,7 +180,8 @@ namespace LoanAgreement
             // 
             // textBoxPaymentSum
             // 
-            this.textBoxPaymentSum.Location = new System.Drawing.Point(797, 254);
+            this.textBoxPaymentSum.Location = new System.Drawing.Point(797, 223);
+            this.textBoxPaymentSum.MaxLength = 18;
             this.textBoxPaymentSum.Name = "textBoxPaymentSum";
             this.textBoxPaymentSum.Size = new System.Drawing.Size(125, 20);
             this.textBoxPaymentSum.TabIndex = 47;
@@ -181,7 +190,7 @@ namespace LoanAgreement
             // labelRemaining
             // 
             this.labelRemaining.AutoSize = true;
-            this.labelRemaining.Location = new System.Drawing.Point(794, 290);
+            this.labelRemaining.Location = new System.Drawing.Point(794, 259);
             this.labelRemaining.Name = "labelRemaining";
             this.labelRemaining.Size = new System.Drawing.Size(109, 13);
             this.labelRemaining.TabIndex = 48;
@@ -190,18 +199,84 @@ namespace LoanAgreement
             // 
             // textBoxRemaining
             // 
-            this.textBoxRemaining.Location = new System.Drawing.Point(797, 314);
+            this.textBoxRemaining.Location = new System.Drawing.Point(797, 283);
             this.textBoxRemaining.Name = "textBoxRemaining";
             this.textBoxRemaining.ReadOnly = true;
             this.textBoxRemaining.Size = new System.Drawing.Size(125, 20);
             this.textBoxRemaining.TabIndex = 49;
             this.textBoxRemaining.Visible = false;
             // 
+            // panel
+            // 
+            this.panel.Controls.Add(this.buttonFind);
+            this.panel.Controls.Add(this.labelTo);
+            this.panel.Controls.Add(this.dateTimePickerTo);
+            this.panel.Controls.Add(this.dateTimePickerFrom);
+            this.panel.Controls.Add(this.labelFrom);
+            this.panel.Location = new System.Drawing.Point(2, 0);
+            this.panel.Name = "panel";
+            this.panel.Size = new System.Drawing.Size(936, 42);
+            this.panel.TabIndex = 50;
+            // 
+            // buttonFind
+            // 
+            this.buttonFind.Location = new System.Drawing.Point(418, 9);
+            this.buttonFind.Name = "buttonFind";
+            this.buttonFind.Size = new System.Drawing.Size(105, 23);
+            this.buttonFind.TabIndex = 4;
+            this.buttonFind.Text = "Найти";
+            this.buttonFind.UseVisualStyleBackColor = true;
+            this.buttonFind.Click += new System.EventHandler(this.buttonFind_Click);
+            // 
+            // labelTo
+            // 
+            this.labelTo.AutoSize = true;
+            this.labelTo.Location = new System.Drawing.Point(192, 18);
+            this.labelTo.Name = "labelTo";
+            this.labelTo.Size = new System.Drawing.Size(21, 13);
+            this.labelTo.TabIndex = 3;
+            this.labelTo.Text = "По";
+            // 
+            // dateTimePickerTo
+            // 
+            this.dateTimePickerTo.Location = new System.Drawing.Point(231, 12);
+            this.dateTimePickerTo.Name = "dateTimePickerTo";
+            this.dateTimePickerTo.Size = new System.Drawing.Size(143, 20);
+            this.dateTimePickerTo.TabIndex = 2;
+            // 
+            // dateTimePickerFrom
+            // 
+            this.dateTimePickerFrom.Location = new System.Drawing.Point(32, 12);
+            this.dateTimePickerFrom.Name = "dateTimePickerFrom";
+            this.dateTimePickerFrom.Size = new System.Drawing.Size(143, 20);
+            this.dateTimePickerFrom.TabIndex = 1;
+            // 
+            // labelFrom
+            // 
+            this.labelFrom.AutoSize = true;
+            this.labelFrom.Location = new System.Drawing.Point(12, 18);
+            this.labelFrom.Name = "labelFrom";
+            this.labelFrom.Size = new System.Drawing.Size(14, 13);
+            this.labelFrom.TabIndex = 0;
+            this.labelFrom.Text = "C";
+            // 
+            // buttonRef
+            // 
+            this.buttonRef.Location = new System.Drawing.Point(664, 320);
+            this.buttonRef.Name = "buttonRef";
+            this.buttonRef.Size = new System.Drawing.Size(75, 23);
+            this.buttonRef.TabIndex = 51;
+            this.buttonRef.Text = "Обновить";
+            this.buttonRef.UseVisualStyleBackColor = true;
+            this.buttonRef.Click += new System.EventHandler(this.buttonRef_Click);
+            // 
             // FormOperations
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(936, 450);
+            this.ClientSize = new System.Drawing.Size(936, 419);
+            this.Controls.Add(this.buttonRef);
+            this.Controls.Add(this.panel);
             this.Controls.Add(this.textBoxRemaining);
             this.Controls.Add(this.labelRemaining);
             this.Controls.Add(this.textBoxPaymentSum);
@@ -222,6 +297,8 @@ namespace LoanAgreement
             this.Text = "Журнал операций";
             this.Load += new System.EventHandler(this.FormOperations_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.panel.ResumeLayout(false);
+            this.panel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -244,5 +321,12 @@ namespace LoanAgreement
         private System.Windows.Forms.TextBox textBoxPaymentSum;
         private System.Windows.Forms.Label labelRemaining;
         private System.Windows.Forms.TextBox textBoxRemaining;
+        private System.Windows.Forms.Panel panel;
+        private System.Windows.Forms.Button buttonFind;
+        private System.Windows.Forms.Label labelTo;
+        private System.Windows.Forms.DateTimePicker dateTimePickerTo;
+        private System.Windows.Forms.DateTimePicker dateTimePickerFrom;
+        private System.Windows.Forms.Label labelFrom;
+        private System.Windows.Forms.Button buttonRef;
     }
 }

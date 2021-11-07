@@ -6,6 +6,7 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using Unity;
+using System.Text.RegularExpressions;
 
 namespace LoanAgreement
 {
@@ -27,6 +28,8 @@ namespace LoanAgreement
 
         LoanAgreementViewModel view;
         OperationViewModel operationView;
+        bool update = false;
+        int updateId = -1;
 
         private void FormOperations_Load(object sender, EventArgs e)
         {
@@ -87,29 +90,71 @@ namespace LoanAgreement
                 return;
             }
 
-            if (comboBoxType.SelectedItem.ToString() == "Поступление" && string.IsNullOrEmpty(textBoxPaymentSum.Text))
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && string.IsNullOrEmpty(textBoxPaymentSum.Text))
             {
                 MessageBox.Show("Заполните сумму поступления", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (comboBoxType.SelectedItem.ToString() == "Поступление" && Convert.ToDecimal(textBoxPaymentSum.Text) > Convert.ToDecimal(textBoxRemaining.Text))
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && Convert.ToDecimal(textBoxPaymentSum.Text) > Convert.ToDecimal(textBoxRemaining.Text))
             {
                 MessageBox.Show("Сумма поступления должна быть не больше оставшейся", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             OperationViewModel conclusionView = logic.Read(new OperationBindingModel { Operationtype = OperationType.Заключение.ToString(), Loanagreementid = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue) })?[0];
-            if (conclusionView == null && comboBoxType.SelectedItem.ToString() == "Поступление")
+            if (conclusionView == null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
             {
                 MessageBox.Show("Договор должен быть заключен", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             OperationViewModel closedView = logic.Read(new OperationBindingModel { Operationtype = OperationType.Закрытие.ToString(), Loanagreementid = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue) })?[0];
-            if (closedView != null && comboBoxType.SelectedItem.ToString() == "Поступление")
+            if (closedView != null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
             {
                 MessageBox.Show("Договор должен быть не закрыт", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && Convert.ToDecimal(textBoxPaymentSum.Text) <= 0)
+            {
+                MessageBox.Show("Сумма поступления должна быть положительной", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
+            {
+                foreach (char c in textBoxPaymentSum.Text)
+                {
+                    if (!char.IsNumber(c) && !(c == ','))
+                    {
+                        MessageBox.Show("Некорректные данные суммы платежа", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+            }
+
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && !Regex.IsMatch(textBoxPaymentSum.Text, @"[0-9]{1,15}[,][0-9]{2}\z"))
+            {
+                MessageBox.Show("Сумма платежа должна содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString() && Convert.ToDecimal(textBoxRemaining.Text) != 0)
+            {
+                MessageBox.Show("Закрыт может быть договор с нулевой оставшейся суммой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString() && conclusionView.Dateofoperation > dateTimePickerDateofconclusion.Value)
+            {
+                MessageBox.Show("Дата закрытия не может быть раньше заключения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && conclusionView.Dateofoperation > dateTimePickerDateofconclusion.Value)
+            {
+                MessageBox.Show("Дата поступления не может быть раньше заключения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -117,29 +162,64 @@ namespace LoanAgreement
             {
                 view = logicL.Read(new LoanAgreementBindingModel { Id = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue) })?[0];
 
-                if (view != null && comboBoxType.SelectedItem.ToString() == "Поступление")
+                if (!update)
                 {
-                    logicL.CreateOrUpdate(new LoanAgreementBindingModel
+                    if (view != null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
                     {
-                        Id = view.Id,
-                        Agentid = view.Agentid,
-                        Counterpartylenderid = view.Counterpartylenderid,
-                        Percent1 = view.Percent1,
-                        Percent2 = view.Percent2,
-                        Sumofloan = view.Sumofloan,
-                        RemainingSumofloan = view.RemainingSumofloan - Convert.ToDecimal(textBoxPaymentSum.Text),
-                        Dateofconclusion = view.Dateofconclusion,
-                        Dateofmaturity = view.Dateofmaturity
+                        logicL.CreateOrUpdate(new LoanAgreementBindingModel
+                        {
+                            Id = view.Id,
+                            Agentid = view.Agentid,
+                            Counterpartylenderid = view.Counterpartylenderid,
+                            Percent1 = view.Percent1,
+                            Percent2 = view.Percent2,
+                            Sumofloan = view.Sumofloan,
+                            RemainingSumofloan = view.RemainingSumofloan - Convert.ToDecimal(textBoxPaymentSum.Text),
+                            Dateofconclusion = view.Dateofconclusion,
+                            Dateofmaturity = view.Dateofmaturity
+                        });
+                    }
+
+                    logic.CreateOrUpdate(new OperationBindingModel
+                    {
+                        Operationtype = comboBoxType.SelectedItem.ToString(),
+                        Dateofoperation = dateTimePickerDateofconclusion.Value,
+                        Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
+                        Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
                     });
                 }
 
-                logic.CreateOrUpdate(new OperationBindingModel
+                if (update)
                 {
-                    Operationtype = comboBoxType.SelectedItem.ToString(),
-                    Dateofoperation = dateTimePickerDateofconclusion.Value,
-                    Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
-                    Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
-                });
+                    operationView = logic.Read(new OperationBindingModel { Id = updateId })?[0];
+
+                    if (view != null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
+                    {
+                        logicL.CreateOrUpdate(new LoanAgreementBindingModel
+                        {
+                            Id = view.Id,
+                            Agentid = view.Agentid,
+                            Counterpartylenderid = view.Counterpartylenderid,
+                            Percent1 = view.Percent1,
+                            Percent2 = view.Percent2,
+                            Sumofloan = view.Sumofloan,
+                            RemainingSumofloan = view.RemainingSumofloan - Convert.ToDecimal(textBoxPaymentSum.Text),
+                            Dateofconclusion = view.Dateofconclusion,
+                            Dateofmaturity = view.Dateofmaturity
+                        });
+                    }
+
+                    logic.CreateOrUpdate(new OperationBindingModel
+                    {
+                        Id = operationView.Id,
+                        Operationtype = comboBoxType.SelectedItem.ToString(),
+                        Dateofoperation = dateTimePickerDateofconclusion.Value,
+                        Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
+                        Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                    });
+
+                    update = false;
+                }
 
                 MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 LoadData();
@@ -159,7 +239,7 @@ namespace LoanAgreement
                 {
                     operationView = logic.Read(new OperationBindingModel { Id = (int)dataGridView.SelectedRows[0].Cells[0].Value })?[0];
 
-                    if (operationView.Operationtype == "Заключение")
+                    if (operationView.Operationtype == OperationType.Заключение.ToString())
                     {
                         MessageBox.Show("Операцию заключения невозможно редактировать", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
@@ -167,17 +247,45 @@ namespace LoanAgreement
 
                     if (operationView != null)
                     {
-                        comboBoxLoanAgreement.SelectedValue = operationView.Loanagreementid;
-                        dateTimePickerDateofconclusion.Text = operationView.Dateofoperation.ToString();
-                        if (operationView.Operationtype == "Поступление")
+                        OperationViewModel closeOperation = logic.Read(new OperationBindingModel { Loanagreementid = operationView.Loanagreementid, Operationtype = OperationType.Закрытие.ToString() })?[0];
+                        if (closeOperation != null && operationView.Operationtype != OperationType.Закрытие.ToString())
                         {
-                            comboBoxType.SelectedIndex = 0;
-                            textBoxSum.Text = operationView.Sum.ToString();
+                            MessageBox.Show("Нельзя изменить операцию закрытого договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
                         }
-                        if (operationView.Operationtype == "Закрытие")
+                        comboBoxLoanAgreement.SelectedValue = operationView.Loanagreementid;
+                        view = logicL.Read(new LoanAgreementBindingModel { Id = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue) })?[0];
+
+                        dateTimePickerDateofconclusion.Text = operationView.Dateofoperation.ToString();
+                        update = true;
+                        updateId = (int)dataGridView.SelectedRows[0].Cells[0].Value;
+                        if (operationView.Operationtype == OperationType.Поступление.ToString())
+                        {
+                            view = logicL.Read(new LoanAgreementBindingModel { Id = operationView.Loanagreementid })?[0];
+                            logicL.CreateOrUpdate(new LoanAgreementBindingModel
+                            {
+                                Id = view.Id,
+                                Agentid = view.Agentid,
+                                Counterpartylenderid = view.Counterpartylenderid,
+                                Percent1 = view.Percent1,
+                                Percent2 = view.Percent2,
+                                Sumofloan = view.Sumofloan,
+                                RemainingSumofloan = view.RemainingSumofloan + operationView.Sum,
+                                Dateofconclusion = view.Dateofconclusion,
+                                Dateofmaturity = view.Dateofmaturity
+                            });
+                            comboBoxType.SelectedIndex = 0;
+                            textBoxSum.Text = view.Sumofloan.ToString();
+                            textBoxPaymentSum.Text = operationView.Sum.ToString();
+                            textBoxRemaining.Text = view.RemainingSumofloan.ToString();
+                            comboBoxLoanAgreement_SelectedIndexChanged(sender, e);
+                        }
+                        if (operationView.Operationtype == OperationType.Закрытие.ToString())
                         {
                             comboBoxType.SelectedIndex = 1;
-                            textBoxSum.Text = operationView.Sum.ToString();
+                            textBoxSum.Text = view.Sumofloan.ToString();
+                            textBoxPaymentSum.Text = "0";
+                            textBoxRemaining.Text = view.RemainingSumofloan.ToString();
                         }
                     }
                 }
@@ -197,7 +305,35 @@ namespace LoanAgreement
                     int id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
                     try
                     {
+                        operationView = logic.Read(new OperationBindingModel { Id = id })?[0];
+                        if (operationView.Operationtype == OperationType.Заключение.ToString())
+                        {
+                            MessageBox.Show("Нельзя удалить операцию заключения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                        OperationViewModel closeOperation = logic.Read(new OperationBindingModel { Loanagreementid = operationView.Loanagreementid, Operationtype = OperationType.Закрытие.ToString() })?[0];
+                        if (closeOperation != null && operationView.Operationtype != OperationType.Закрытие.ToString())
+                        {
+                            MessageBox.Show("Нельзя удалить операцию закрытого договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                         logic.Delete(new OperationBindingModel { Id = id });
+                        if (operationView.Operationtype == OperationType.Поступление.ToString())
+                        {
+                            view = logicL.Read(new LoanAgreementBindingModel { Id = operationView.Loanagreementid })?[0];
+                            logicL.CreateOrUpdate(new LoanAgreementBindingModel
+                            {
+                                Id = view.Id,
+                                Agentid = view.Agentid,
+                                Counterpartylenderid = view.Counterpartylenderid,
+                                Percent1 = view.Percent1,
+                                Percent2 = view.Percent2,
+                                Sumofloan = view.Sumofloan,
+                                RemainingSumofloan = view.RemainingSumofloan + operationView.Sum,
+                                Dateofconclusion = view.Dateofconclusion,
+                                Dateofmaturity = view.Dateofmaturity
+                            });
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -228,7 +364,7 @@ namespace LoanAgreement
 
         private void comboBoxType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxType.SelectedItem != null && comboBoxType.SelectedItem.ToString() == "Поступление")
+            if (comboBoxType.SelectedItem != null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
             {
                 labelPaymentSum.Visible = true;
                 labelRemaining.Visible = true;
@@ -236,20 +372,25 @@ namespace LoanAgreement
                 textBoxRemaining.Visible = true;
 
                 view = logicL.Read(new LoanAgreementBindingModel { Id = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue) })?[0];
-                operationView = logic.Read(new OperationBindingModel { Loanagreementid = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue), Operationtype = "Поступление"})?[0];
 
                 if (view != null)
                 {
                     textBoxRemaining.Text = view.RemainingSumofloan.ToString();
                 }
-                //if (operationView == null)
-                //{
-                //    textBoxRemaining.Text = view.Sumofloan.ToString();
-                //}
-                //else
-                //{
-                //    textBoxRemaining.Text = remainingSum.ToString();
-                //}
+            }
+            else if (comboBoxType.SelectedItem != null && comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString())
+            {
+                labelPaymentSum.Visible = false;
+                labelRemaining.Visible = true;
+                textBoxPaymentSum.Visible = false;
+                textBoxRemaining.Visible = true;
+
+                view = logicL.Read(new LoanAgreementBindingModel { Id = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue) })?[0];
+
+                if (view != null)
+                {
+                    textBoxRemaining.Text = view.RemainingSumofloan.ToString();
+                }
             }
             else 
             {
@@ -258,6 +399,55 @@ namespace LoanAgreement
                 textBoxPaymentSum.Visible = false;
                 textBoxRemaining.Visible = false;
             }
+        }
+
+        private void buttonFind_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var list = logic.Read(new OperationBindingModel { DateFrom = dateTimePickerFrom.Value, DateTo = dateTimePickerTo.Value });
+                if (comboBoxLoanAgreement.SelectedValue != null)
+                {
+                    list = logic.Read(new OperationBindingModel { ReportLoanagreementid = Convert.ToInt32(comboBoxLoanAgreement.SelectedValue), 
+                        DateFrom = dateTimePickerFrom.Value, DateTo = dateTimePickerTo.Value });
+                }
+
+                if (list != null)
+                {
+                    dataGridView.DataSource = list;
+                    dataGridView.Columns[0].Visible = false;
+                    dataGridView.Columns[1].Visible = false;
+                    dataGridView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                }
+
+                var listLoanagreement = logicL.Read(null);
+
+                foreach (var item in listLoanagreement)
+                {
+                    comboBoxLoanAgreement.DisplayMember = "Id";
+                    comboBoxLoanAgreement.ValueMember = "Id";
+                    comboBoxLoanAgreement.DataSource = listLoanagreement;
+                    comboBoxLoanAgreement.SelectedItem = null;
+                }
+
+                comboBoxType.SelectedIndex = -1;
+                textBoxSum.Text = "";
+                textBoxPaymentSum.Text = "0";
+
+                labelPaymentSum.Visible = false;
+                labelRemaining.Visible = false;
+                textBoxPaymentSum.Visible = false;
+                textBoxRemaining.Visible = false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonRef_Click(object sender, EventArgs e)
+        {
+            LoadData();
         }
     }
 }
