@@ -45,7 +45,6 @@ namespace LoanAgreement
                 if (list != null)
                 {
                     dataGridView.DataSource = list;
-                    dataGridView.Columns[0].Visible = false;
                     dataGridView.Columns[1].Visible = false;
                     dataGridView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }
@@ -178,15 +177,40 @@ namespace LoanAgreement
                             Dateofconclusion = view.Dateofconclusion,
                             Dateofmaturity = view.Dateofmaturity
                         });
+
+                        logic.CreateOrUpdate(new OperationBindingModel
+                        {
+                            Operationtype = comboBoxType.SelectedItem.ToString(),
+                            Dateofoperation = dateTimePickerDateofconclusion.Value,
+                            Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
+                            Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                        });
                     }
 
-                    logic.CreateOrUpdate(new OperationBindingModel
+                    if (view != null && comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString())
                     {
-                        Operationtype = comboBoxType.SelectedItem.ToString(),
-                        Dateofoperation = dateTimePickerDateofconclusion.Value,
-                        Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
-                        Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
-                    });
+                        if (view.Dateofmaturity >= dateTimePickerDateofconclusion.Value.Date)
+                        {
+                            logic.CreateOrUpdate(new OperationBindingModel
+                            {
+                                Operationtype = comboBoxType.SelectedItem.ToString(),
+                                Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
+                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                            });
+                        }
+
+                        if (view.Dateofmaturity < dateTimePickerDateofconclusion.Value.Date)
+                        {
+                            logic.CreateOrUpdate(new OperationBindingModel
+                            {
+                                Operationtype = comboBoxType.SelectedItem.ToString(),
+                                Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
+                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                            });
+                        }
+                    }
                 }
 
                 if (update)
@@ -207,16 +231,41 @@ namespace LoanAgreement
                             Dateofconclusion = view.Dateofconclusion,
                             Dateofmaturity = view.Dateofmaturity
                         });
+
+                        logic.CreateOrUpdate(new OperationBindingModel
+                        {
+                            Id = operationView.Id,
+                            Operationtype = comboBoxType.SelectedItem.ToString(),
+                            Dateofoperation = dateTimePickerDateofconclusion.Value,
+                            Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
+                            Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                        });
                     }
 
-                    logic.CreateOrUpdate(new OperationBindingModel
+                    if (view != null && comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString())
                     {
-                        Id = operationView.Id,
-                        Operationtype = comboBoxType.SelectedItem.ToString(),
-                        Dateofoperation = dateTimePickerDateofconclusion.Value,
-                        Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
-                        Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
-                    });
+                        if (view.Dateofmaturity >= dateTimePickerDateofconclusion.Value.Date)
+                        {
+                            logic.CreateOrUpdate(new OperationBindingModel
+                            {
+                                Operationtype = comboBoxType.SelectedItem.ToString(),
+                                Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
+                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                            });
+                        }
+
+                        if (view.Dateofmaturity < dateTimePickerDateofconclusion.Value.Date)
+                        {
+                            logic.CreateOrUpdate(new OperationBindingModel
+                            {
+                                Operationtype = comboBoxType.SelectedItem.ToString(),
+                                Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
+                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                            });
+                        }
+                    }
 
                     update = false;
                 }
@@ -415,7 +464,6 @@ namespace LoanAgreement
                 if (list != null)
                 {
                     dataGridView.DataSource = list;
-                    dataGridView.Columns[0].Visible = false;
                     dataGridView.Columns[1].Visible = false;
                     dataGridView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 }

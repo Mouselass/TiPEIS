@@ -8,7 +8,9 @@ namespace LoanAgreementBusinessLogic.ViewModels
 {
     public class OperationViewModel
     {
+        [DisplayName("Номер операции")]
         public int? Id { get; set; }
+
         public int? Loanagreementid { get; set; }
 
         [DisplayName("Договор")]
