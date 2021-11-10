@@ -29,7 +29,7 @@ namespace LoanAgreementBusinessLogic.BusinessLogic
             return _loanAgreementStorage.GetFilteredList(model);
         }
 
-        public void CreateOrUpdate(LoanAgreementBindingModel model)
+        public int CreateOrUpdate(LoanAgreementBindingModel model)
         {
             var element = _loanAgreementStorage.GetElement(new LoanAgreementBindingModel
             {
@@ -42,10 +42,12 @@ namespace LoanAgreementBusinessLogic.BusinessLogic
             if (model.Id.HasValue)
             {
                 _loanAgreementStorage.Update(model);
+                return model.Id.Value;
             }
             else
             {
-                _loanAgreementStorage.Insert(model);
+                int Id = _loanAgreementStorage.Insert(model);
+                return Id;
             }
         }
 

@@ -52,6 +52,7 @@ namespace LoanAgreement
             this.dateTimePickerFrom = new System.Windows.Forms.DateTimePicker();
             this.labelFrom = new System.Windows.Forms.Label();
             this.buttonRef = new System.Windows.Forms.Button();
+            this.buttonPostingJournal = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.panel.SuspendLayout();
             this.SuspendLayout();
@@ -270,11 +271,22 @@ namespace LoanAgreement
             this.buttonRef.UseVisualStyleBackColor = true;
             this.buttonRef.Click += new System.EventHandler(this.buttonRef_Click);
             // 
+            // buttonPostingJournal
+            // 
+            this.buttonPostingJournal.Location = new System.Drawing.Point(664, 362);
+            this.buttonPostingJournal.Name = "buttonPostingJournal";
+            this.buttonPostingJournal.Size = new System.Drawing.Size(260, 24);
+            this.buttonPostingJournal.TabIndex = 52;
+            this.buttonPostingJournal.Text = "Просмотреть проводки";
+            this.buttonPostingJournal.UseVisualStyleBackColor = true;
+            this.buttonPostingJournal.Click += new System.EventHandler(this.buttonPostingJournal_Click);
+            // 
             // FormOperations
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 419);
+            this.Controls.Add(this.buttonPostingJournal);
             this.Controls.Add(this.buttonRef);
             this.Controls.Add(this.panel);
             this.Controls.Add(this.textBoxRemaining);
@@ -328,5 +340,6 @@ namespace LoanAgreement
         private System.Windows.Forms.DateTimePicker dateTimePickerFrom;
         private System.Windows.Forms.Label labelFrom;
         private System.Windows.Forms.Button buttonRef;
+        private System.Windows.Forms.Button buttonPostingJournal;
     }
 }

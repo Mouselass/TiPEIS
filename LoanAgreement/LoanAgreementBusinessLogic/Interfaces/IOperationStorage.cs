@@ -14,7 +14,7 @@ namespace LoanAgreementBusinessLogic.Interfaces
 
         OperationViewModel GetElement(OperationBindingModel model);
 
-        void Insert(OperationBindingModel model);
+        int Insert(OperationBindingModel model);
 
         void Update(OperationBindingModel model);
 

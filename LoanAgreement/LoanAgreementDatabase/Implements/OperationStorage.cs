@@ -78,12 +78,15 @@ namespace LoanAgreementDatabase.Implements
             }
         }
 
-        public void Insert(OperationBindingModel model)
+        public int Insert(OperationBindingModel model)
         {
             using (var context = new postgresContext())
             {
-                context.Operation.Add(CreateModel(model, new Operation()));
+                var element = CreateModel(model, new Operation());
+                context.Operation.Add(element);
                 context.SaveChanges();
+                var operation = context.Operation.FirstOrDefault(rec => element.Id == rec.Id);
+                return operation.Id;
             }
         }
 

@@ -192,28 +192,27 @@ namespace LoanAgreement
 
             try
             {
-                logic.CreateOrUpdate(new LoanAgreementBindingModel
-                {
-                    Id = id,
-                    Agentid = Convert.ToInt32(comboBoxAgent.SelectedValue),
-                    Counterpartylenderid = Convert.ToInt32(comboBoxCounterpartyLender.SelectedValue),
-                    Percent1 = Convert.ToDecimal(textBoxPercent1.Text),
-                    Percent2 = Convert.ToDecimal(textBoxPercent2.Text),
-                    Sumofloan = Convert.ToDecimal(textBoxSum.Text),
-                    RemainingSumofloan = Convert.ToDecimal(textBoxSum.Text),
-                    Dateofconclusion = dateTimePickerDateofconclusion.Value,
-                    Dateofmaturity = dateTimePickerDateofmaturity.Value
-                });
+                int loanAgreementId = 
+                    logic.CreateOrUpdate(new LoanAgreementBindingModel
+                    {
+                        Id = id,
+                        Agentid = Convert.ToInt32(comboBoxAgent.SelectedValue),
+                        Counterpartylenderid = Convert.ToInt32(comboBoxCounterpartyLender.SelectedValue),
+                        Percent1 = Convert.ToDecimal(textBoxPercent1.Text),
+                        Percent2 = Convert.ToDecimal(textBoxPercent2.Text),
+                        Sumofloan = Convert.ToDecimal(textBoxSum.Text),
+                        RemainingSumofloan = Convert.ToDecimal(textBoxSum.Text),
+                        Dateofconclusion = dateTimePickerDateofconclusion.Value,
+                        Dateofmaturity = dateTimePickerDateofmaturity.Value
+                    });
 
-                view = logic.Read(new LoanAgreementBindingModel { Id = id })?[0];
+                operation = logicO.Read(new OperationBindingModel { Loanagreementid = loanAgreementId, Operationtype = "Заключение" })?[0];
 
-                operation = logicO.Read(new OperationBindingModel { Loanagreementid = view.Id, Operationtype = "Заключение" })?[0];
-
-                if (operation == null || view.Id != operation.Loanagreementid)
+                if (operation == null)
                 {
                     logicO.CreateOrUpdate(new OperationBindingModel
                     {
-                        Loanagreementid = view.Id,
+                        Loanagreementid = loanAgreementId,
                         Operationtype = OperationType.Заключение.ToString(),
                         Dateofoperation = dateTimePickerDateofconclusion.Value,
                         Sum = Convert.ToDecimal(textBoxSum.Text)

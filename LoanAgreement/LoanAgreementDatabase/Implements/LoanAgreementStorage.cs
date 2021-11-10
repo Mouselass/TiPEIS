@@ -87,12 +87,15 @@ namespace LoanAgreementDatabase.Implements
             }
         }
 
-        public void Insert(LoanAgreementBindingModel model)
+        public int Insert(LoanAgreementBindingModel model)
         {
             using (var context = new postgresContext())
             {
-                context.Loanagreement.Add(CreateModel(model, new Loanagreement()));
+                var element = CreateModel(model, new Loanagreement());
+                context.Loanagreement.Add(element);
                 context.SaveChanges();
+                var loanAgreement = context.Loanagreement.FirstOrDefault(rec => element.Id == rec.Id);
+                return loanAgreement.Id;
             }
         }
 

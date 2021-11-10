@@ -7,6 +7,7 @@ using System.Data;
 using System.Windows.Forms;
 using Unity;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace LoanAgreement
 {
@@ -16,12 +17,16 @@ namespace LoanAgreement
         public new IUnityContainer Container { get; set; }
         private readonly OperationLogic logic;
         private readonly LoanAgreementLogic logicL;
+        private readonly PostingJournalLogic logicP;
+        private readonly ChartOfAccountsLogic logicC;
 
-        public FormOperations(OperationLogic logic, LoanAgreementLogic logicL)
+        public FormOperations(OperationLogic logic, LoanAgreementLogic logicL, PostingJournalLogic logicP, ChartOfAccountsLogic logicC)
         {
             InitializeComponent();
             this.logic = logic;
             this.logicL = logicL;
+            this.logicP = logicP;
+            this.logicC = logicC;
             comboBoxType.Items.Add(OperationType.Поступление);
             comboBoxType.Items.Add(OperationType.Закрытие);
         }
@@ -178,12 +183,27 @@ namespace LoanAgreement
                             Dateofmaturity = view.Dateofmaturity
                         });
 
-                        logic.CreateOrUpdate(new OperationBindingModel
-                        {
-                            Operationtype = comboBoxType.SelectedItem.ToString(),
-                            Dateofoperation = dateTimePickerDateofconclusion.Value,
-                            Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
-                            Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                        int operationId = 
+                            logic.CreateOrUpdate(new OperationBindingModel
+                            {
+                                Operationtype = comboBoxType.SelectedItem.ToString(),
+                                Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
+                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                            });
+
+                        OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];
+                        logicP.CreateOrUpdate(new PostingJournalBindingModel 
+                        { 
+                            Debitaccount = 1,
+                            Creditaccount = 2,
+                            Subcontocredit1 = view.Counterpartylender,
+                            Subcontocredit2 = view.Agent,
+                            Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                            Amount = 1,
+                            Sum = operation.Sum,
+                            Operationid = operationId,
+                            Date = dateTimePickerDateofconclusion.Value
                         });
                     }
 
@@ -191,23 +211,87 @@ namespace LoanAgreement
                     {
                         if (view.Dateofmaturity >= dateTimePickerDateofconclusion.Value.Date)
                         {
-                            logic.CreateOrUpdate(new OperationBindingModel
+                            int operationId = 
+                                logic.CreateOrUpdate(new OperationBindingModel
+                                {
+                                    Operationtype = comboBoxType.SelectedItem.ToString(),
+                                    Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                    Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
+                                    Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                                });
+
+                            OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];
+                            logicP.CreateOrUpdate(new PostingJournalBindingModel
                             {
-                                Operationtype = comboBoxType.SelectedItem.ToString(),
-                                Dateofoperation = dateTimePickerDateofconclusion.Value,
-                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
-                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                                Debitaccount = 4,
+                                Subcontodebit1 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Creditaccount = 2,
+                                Subcontocredit1 = view.Counterpartylender,
+                                Subcontocredit2 = view.Agent,
+                                Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Amount = 1,
+                                Sum = view.Sumofloan * (view.Percent2 / 100),
+                                Operationid = operationId,
+                                Date = dateTimePickerDateofconclusion.Value
+                            });
+
+                            logicP.CreateOrUpdate(new PostingJournalBindingModel
+                            {
+                                Debitaccount = 2,
+                                Subcontodebit1 = view.Counterpartylender,
+                                Subcontodebit2 = view.Agent,
+                                Subcontodebit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Creditaccount = 3,
+                                Subcontocredit1 = view.Agent,                                
+                                Subcontocredit2 = view.Counterpartylender,
+                                Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Amount = 1,
+                                Sum = operation.Sum,
+                                Operationid = operationId,
+                                Date = dateTimePickerDateofconclusion.Value
                             });
                         }
 
                         if (view.Dateofmaturity < dateTimePickerDateofconclusion.Value.Date)
                         {
-                            logic.CreateOrUpdate(new OperationBindingModel
+                            int operationId = 
+                                logic.CreateOrUpdate(new OperationBindingModel
+                                {
+                                    Operationtype = comboBoxType.SelectedItem.ToString(),
+                                    Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                    Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
+                                    Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                                });
+
+                            OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];
+                            logicP.CreateOrUpdate(new PostingJournalBindingModel
                             {
-                                Operationtype = comboBoxType.SelectedItem.ToString(),
-                                Dateofoperation = dateTimePickerDateofconclusion.Value,
-                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
-                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                                Debitaccount = 4,
+                                Subcontodebit1 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Creditaccount = 2,
+                                Subcontocredit1 = view.Counterpartylender,
+                                Subcontocredit2 = view.Agent,
+                                Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Amount = 1,
+                                Sum = view.Sumofloan * (view.Percent1 / 100),
+                                Operationid = operationId,
+                                Date = dateTimePickerDateofconclusion.Value
+                            });
+
+                            logicP.CreateOrUpdate(new PostingJournalBindingModel
+                            {
+                                Debitaccount = 2,
+                                Subcontodebit1 = view.Counterpartylender,
+                                Subcontodebit2 = view.Agent,
+                                Subcontodebit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Creditaccount = 3,
+                                Subcontocredit1 = view.Agent,
+                                Subcontocredit2 = view.Counterpartylender,
+                                Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Amount = 1,
+                                Sum = operation.Sum,
+                                Operationid = operationId,
+                                Date = dateTimePickerDateofconclusion.Value
                             });
                         }
                     }
@@ -216,6 +300,7 @@ namespace LoanAgreement
                 if (update)
                 {
                     operationView = logic.Read(new OperationBindingModel { Id = updateId })?[0];
+                    PostingJournalViewModel postingJournal = logicP.Read(new PostingJournalBindingModel { Operationid = updateId })?[0];
 
                     if (view != null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
                     {
@@ -232,38 +317,141 @@ namespace LoanAgreement
                             Dateofmaturity = view.Dateofmaturity
                         });
 
-                        logic.CreateOrUpdate(new OperationBindingModel
+                        int operationId = 
+                            logic.CreateOrUpdate(new OperationBindingModel
+                            {
+                                Id = operationView.Id,
+                                Operationtype = comboBoxType.SelectedItem.ToString(),
+                                Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
+                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                            });
+
+                        OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];                        
+                        if (postingJournal != null)
                         {
-                            Id = operationView.Id,
-                            Operationtype = comboBoxType.SelectedItem.ToString(),
-                            Dateofoperation = dateTimePickerDateofconclusion.Value,
-                            Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
-                            Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
-                        });
+                            logicP.CreateOrUpdate(new PostingJournalBindingModel
+                            {
+                                Id = postingJournal.Id,
+                                Debitaccount = 1,
+                                Creditaccount = 2,
+                                Subcontocredit1 = view.Counterpartylender,
+                                Subcontocredit2 = view.Agent,
+                                Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                Amount = 1,
+                                Sum = operation.Sum,
+                                Operationid = operationId,
+                                Date = dateTimePickerDateofconclusion.Value
+                            });
+                        }
                     }
 
                     if (view != null && comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString())
                     {
                         if (view.Dateofmaturity >= dateTimePickerDateofconclusion.Value.Date)
                         {
-                            logic.CreateOrUpdate(new OperationBindingModel
+                            int operationId = 
+                                logic.CreateOrUpdate(new OperationBindingModel
+                                {
+                                    Id = operationView.Id,
+                                    Operationtype = comboBoxType.SelectedItem.ToString(),
+                                    Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                    Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
+                                    Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                                });
+
+                            PostingJournalViewModel postingJournalPercent = logicP.Read(new PostingJournalBindingModel { Operationid = updateId, Debitaccount = 4, Creditaccount = 2 })?[0];
+                            if (postingJournalPercent != null)
                             {
-                                Operationtype = comboBoxType.SelectedItem.ToString(),
-                                Dateofoperation = dateTimePickerDateofconclusion.Value,
-                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
-                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
-                            });
+                                logicP.CreateOrUpdate(new PostingJournalBindingModel
+                                {
+                                    Id = postingJournalPercent.Id,
+                                    Debitaccount = 4,
+                                    Subcontodebit1 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Creditaccount = 2,
+                                    Subcontocredit1 = view.Counterpartylender,
+                                    Subcontocredit2 = view.Agent,
+                                    Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Amount = 1,
+                                    Sum = view.Sumofloan * (view.Percent2 / 100),
+                                    Operationid = operationId,
+                                    Date = dateTimePickerDateofconclusion.Value
+                                });
+                            }
+
+                            PostingJournalViewModel postingJournalSum = logicP.Read(new PostingJournalBindingModel { Operationid = updateId, Debitaccount = 2, Creditaccount = 3 })?[0];
+                            if (postingJournalSum != null)
+                            {
+                                logicP.CreateOrUpdate(new PostingJournalBindingModel
+                                {
+                                    Id = postingJournalSum.Id,
+                                    Debitaccount = 2,
+                                    Subcontodebit1 = view.Counterpartylender,
+                                    Subcontodebit2 = view.Agent,
+                                    Subcontodebit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Creditaccount = 3,
+                                    Subcontocredit1 = view.Agent,
+                                    Subcontocredit2 = view.Counterpartylender,
+                                    Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Amount = 1,
+                                    Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
+                                    Operationid = operationId,
+                                    Date = dateTimePickerDateofconclusion.Value
+                                });
+                            }
                         }
 
                         if (view.Dateofmaturity < dateTimePickerDateofconclusion.Value.Date)
                         {
-                            logic.CreateOrUpdate(new OperationBindingModel
+                            int operationId = 
+                                logic.CreateOrUpdate(new OperationBindingModel
+                                {
+                                    Id = operationView.Id,
+                                    Operationtype = comboBoxType.SelectedItem.ToString(),
+                                    Dateofoperation = dateTimePickerDateofconclusion.Value,
+                                    Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
+                                    Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
+                                });
+
+                            PostingJournalViewModel postingJournalPercent = logicP.Read(new PostingJournalBindingModel { Operationid = updateId, Debitaccount = 4, Creditaccount = 2 })?[0];
+                            if (postingJournalPercent != null)
                             {
-                                Operationtype = comboBoxType.SelectedItem.ToString(),
-                                Dateofoperation = dateTimePickerDateofconclusion.Value,
-                                Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
-                                Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
-                            });
+                                logicP.CreateOrUpdate(new PostingJournalBindingModel
+                                {
+                                    Id = postingJournalPercent.Id,
+                                    Debitaccount = 4,
+                                    Subcontodebit1 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Creditaccount = 2,
+                                    Subcontocredit1 = view.Counterpartylender,
+                                    Subcontocredit2 = view.Agent,
+                                    Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Amount = 1,
+                                    Sum = view.Sumofloan * (view.Percent1 / 100),
+                                    Operationid = operationId,
+                                    Date = dateTimePickerDateofconclusion.Value
+                                });
+                            }
+
+                            PostingJournalViewModel postingJournalSum = logicP.Read(new PostingJournalBindingModel { Operationid = updateId, Debitaccount = 2, Creditaccount = 3 })?[0];
+                            if (postingJournalSum != null)
+                            {
+                                logicP.CreateOrUpdate(new PostingJournalBindingModel
+                                {
+                                    Id = postingJournalSum.Id,
+                                    Debitaccount = 2,
+                                    Subcontodebit1 = view.Counterpartylender,
+                                    Subcontodebit2 = view.Agent,
+                                    Subcontodebit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Creditaccount = 3,
+                                    Subcontocredit1 = view.Agent,
+                                    Subcontocredit2 = view.Counterpartylender,
+                                    Subcontocredit3 = "Договор № " + view.Id.ToString() + " от " + view.Dateofconclusion,
+                                    Amount = 1,
+                                    Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
+                                    Operationid = operationId,
+                                    Date = dateTimePickerDateofconclusion.Value
+                                });
+                            }
                         }
                     }
 
@@ -274,9 +462,9 @@ namespace LoanAgreement
                 LoadData();
             }
 
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.InnerException.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -496,6 +684,19 @@ namespace LoanAgreement
         private void buttonRef_Click(object sender, EventArgs e)
         {
             LoadData();
+        }
+
+        private void buttonPostingJournal_Click(object sender, EventArgs e)
+        {
+            if (dataGridView.SelectedRows.Count == 1)
+            {
+                var form = Container.Resolve<FormPostingJournal>();
+                form.OperationId = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    LoadData();
+                }
+            }
         }
     }
 }

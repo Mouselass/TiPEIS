@@ -29,7 +29,7 @@ namespace LoanAgreementBusinessLogic.BusinessLogic
             return _operationStorage.GetFilteredList(model);
         }
 
-        public void CreateOrUpdate(OperationBindingModel model)
+        public int CreateOrUpdate(OperationBindingModel model)
         {
             var element = _operationStorage.GetElement(new OperationBindingModel
             {
@@ -42,10 +42,12 @@ namespace LoanAgreementBusinessLogic.BusinessLogic
             if (model.Id.HasValue)
             {
                 _operationStorage.Update(model);
+                return model.Id.Value;
             }
             else
             {
-                _operationStorage.Insert(model);
+                int Id = _operationStorage.Insert(model);
+                return Id;
             }
         }
 
