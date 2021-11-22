@@ -116,12 +116,14 @@ namespace LoanAgreement
             this.ведомостьРасходовToolStripMenuItem.Name = "ведомостьРасходовToolStripMenuItem";
             this.ведомостьРасходовToolStripMenuItem.Size = new System.Drawing.Size(366, 22);
             this.ведомостьРасходовToolStripMenuItem.Text = "Ведомость расходов на получение займов за период";
+            this.ведомостьРасходовToolStripMenuItem.Click += new System.EventHandler(this.ведомостьРасходовToolStripMenuItem_Click);
             // 
             // ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem
             // 
             this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem.Name = "ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem";
             this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem.Size = new System.Drawing.Size(366, 22);
             this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem.Text = "Ведомость сумм полученных займов за период";
+            this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem.Click += new System.EventHandler(this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem_Click);
             // 
             // dataGridView
             // 

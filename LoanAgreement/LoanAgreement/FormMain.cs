@@ -73,5 +73,17 @@ namespace LoanAgreement
             var form = Container.Resolve<FormPostingJournal>();
             form.ShowDialog();
         }
+
+        private void ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = Container.Resolve<FormReportSums>();
+            form.ShowDialog();
+        }
+
+        private void ведомостьРасходовToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = Container.Resolve<FormReportCosts>();
+            form.ShowDialog();
+        }
     }
 }
