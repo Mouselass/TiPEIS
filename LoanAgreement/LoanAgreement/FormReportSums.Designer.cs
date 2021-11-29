@@ -61,6 +61,7 @@ namespace LoanAgreement
             this.buttonToPdf.TabIndex = 5;
             this.buttonToPdf.Text = "В Pdf";
             this.buttonToPdf.UseVisualStyleBackColor = true;
+            this.buttonToPdf.Click += new System.EventHandler(this.buttonToPdf_Click);
             // 
             // buttonMake
             // 
