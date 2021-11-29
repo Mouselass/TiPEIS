@@ -7,7 +7,13 @@ namespace LoanAgreementBusinessLogic.BindingModels
     public class ReportBindingModel
     {
         public string FileName { get; set; }
+
         public DateTime? DateFrom { get; set; }
+
         public DateTime? DateTo { get; set; }
+
+        public int? ChartOfAccount { get; set; }  
+        
+        public string ChartOfAccountName { get; set; }    
     }
 }

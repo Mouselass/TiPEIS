@@ -41,6 +41,7 @@ namespace LoanAgreement
             this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.labelName = new System.Windows.Forms.Label();
+            this.оборотносальдоваяВедомостьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
@@ -106,7 +107,8 @@ namespace LoanAgreement
             // 
             this.отчетыToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ведомостьРасходовToolStripMenuItem,
-            this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem});
+            this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem,
+            this.оборотносальдоваяВедомостьToolStripMenuItem});
             this.отчетыToolStripMenuItem.Name = "отчетыToolStripMenuItem";
             this.отчетыToolStripMenuItem.Size = new System.Drawing.Size(60, 20);
             this.отчетыToolStripMenuItem.Text = "Отчеты";
@@ -144,6 +146,13 @@ namespace LoanAgreement
             this.labelName.TabIndex = 2;
             this.labelName.Text = "План счетов";
             // 
+            // оборотносальдоваяВедомостьToolStripMenuItem
+            // 
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Name = "оборотносальдоваяВедомостьToolStripMenuItem";
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Size = new System.Drawing.Size(366, 22);
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Text = "Оборотно-сальдовая ведомость";
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Click += new System.EventHandler(this.оборотносальдоваяВедомостьToolStripMenuItem_Click);
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -178,6 +187,7 @@ namespace LoanAgreement
         private System.Windows.Forms.DataGridView dataGridView;
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.ToolStripMenuItem ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem оборотносальдоваяВедомостьToolStripMenuItem;
     }
 }
 

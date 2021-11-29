@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using LoanAgreementBusinessLogic.Interfaces;
 using LoanAgreementBusinessLogic.BindingModels;
 using LoanAgreementBusinessLogic.ViewModels;
 using LoanAgreementBusinessLogic.Enum;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LoanAgreementDatabase.Implements
 {
-    public class ReportStorage
+    public class ReportStorage : IReportStorage
     { 
         public List<ReportSumsViewModel> GetSums(ReportBindingModel model)
         {
@@ -41,6 +42,51 @@ namespace LoanAgreementDatabase.Implements
                     ProcentSum = rec.Sum
                 })
                 .ToList();
+            }
+        }
+
+        public ReportPostingJournalViewModel GetReportPostingJournal(ReportBindingModel model)
+        {
+            using (var context = new postgresContext())
+            {
+                var startBalance = context.Postingjournal.Include(rec => rec.Operation).Where(rec => rec.Date < model.DateFrom.Value &&
+                    (rec.Debitaccount == model.ChartOfAccount || rec.Creditaccount == model.ChartOfAccount)).ToList();
+
+                var periodBalance = context.Postingjournal.Include(rec => rec.Operation).Where(rec => rec.Date >= model.DateFrom.Value &&
+                    (rec.Debitaccount == model.ChartOfAccount || rec.Creditaccount == model.ChartOfAccount)).ToList();
+
+                var reportPostingJournalViewModel = new ReportPostingJournalViewModel
+                {
+                    ChartOfAccountsId = model.ChartOfAccount.Value,
+                    ChartOfAccounts = model.ChartOfAccountName,
+                    BalanceStartPeriodDebit = startBalance.Where(rec => rec.Debitaccount == model.ChartOfAccount).Sum(rec => rec.Operation.Sum),
+                    BalanceStartPeriodCredit = startBalance.Where(rec => rec.Creditaccount == model.ChartOfAccount).Sum(rec => rec.Operation.Sum),
+                    BalancePeriodDebit = periodBalance.Where(rec => rec.Debitaccount == model.ChartOfAccount).Sum(rec => rec.Operation.Sum),
+                    BalancePeriodCredit = periodBalance.Where(rec => rec.Creditaccount == model.ChartOfAccount).Sum(rec => rec.Operation.Sum)
+                };
+                reportPostingJournalViewModel.BalanceEndPeriodDebit = reportPostingJournalViewModel.BalanceStartPeriodDebit + reportPostingJournalViewModel.BalancePeriodDebit;
+                reportPostingJournalViewModel.BalanceEndPeriodCredit = reportPostingJournalViewModel.BalanceStartPeriodCredit + reportPostingJournalViewModel.BalancePeriodCredit;
+
+                return reportPostingJournalViewModel;
+            }
+        }
+
+        public List<ReportPostingJournalViewModel> GetReportPostingJournals(ReportBindingModel model)
+        {
+            using (var context = new postgresContext())
+            {
+                var chartOfAccounts = context.Chartofaccounts.ToList();
+
+                var result = new List<ReportPostingJournalViewModel>();
+
+                foreach (var chartOfAccount in chartOfAccounts)
+                {
+                    model.ChartOfAccount = chartOfAccount.Id;
+                    model.ChartOfAccountName = chartOfAccount.Accountnumber.ToString();
+                    result.Add(GetReportPostingJournal(model));
+                }
+
+                return result;
             }
         }
     }

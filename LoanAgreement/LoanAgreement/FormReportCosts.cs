@@ -7,20 +7,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LoanAgreementDatabase.Implements;
 using LoanAgreementBusinessLogic.BindingModels;
+using LoanAgreementBusinessLogic.BusinessLogic;
 using Microsoft.Reporting.WinForms;
 
 namespace LoanAgreement
 {
     public partial class FormReportCosts : Form
     {
-        private readonly ReportStorage storage;
+        private readonly ReportLogic logic;
 
-        public FormReportCosts(ReportStorage storage)
+        public FormReportCosts(ReportLogic logic)
         {
             InitializeComponent();
-            this.storage = storage;
+            this.logic = logic;
         }
 
         private void buttonMake_Click(object sender, EventArgs e)
@@ -38,7 +38,7 @@ namespace LoanAgreement
                 "c " + dateTimePickerFrom.Value.ToShortDateString() +
                 " по " + dateTimePickerTo.Value.ToShortDateString());
                 reportViewer.LocalReport.SetParameters(parameter);
-                var dataSource = storage.GetCosts(new ReportBindingModel
+                var dataSource = logic.GetCosts(new ReportBindingModel
                 {
                     DateFrom = dateTimePickerFrom.Value,
                     DateTo = dateTimePickerTo.Value
