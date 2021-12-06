@@ -6,6 +6,7 @@ using System;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using NLog;
 
 namespace LoanAgreement
 {
@@ -17,6 +18,7 @@ namespace LoanAgreement
         private readonly CounterpartyLenderLogic logicC;
         private readonly OperationLogic logicO;
         private int? id;
+        private readonly Logger logger;
 
         public FormLoanAgreement(LoanAgreementLogic logic, AgentLogic logicA, CounterpartyLenderLogic logicC, OperationLogic logicO)
         {
@@ -25,6 +27,7 @@ namespace LoanAgreement
             this.logicA = logicA;
             this.logicC = logicC;
             this.logicO = logicO;
+            logger = LogManager.GetCurrentClassLogger();
         }
 
         LoanAgreementViewModel view;
@@ -58,6 +61,7 @@ namespace LoanAgreement
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error("Ошибка");
             }
 
             if (id.HasValue)
@@ -80,6 +84,7 @@ namespace LoanAgreement
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Error("Ошибка");
                 }
             }
         }
@@ -89,18 +94,21 @@ namespace LoanAgreement
             if (comboBoxAgent.SelectedValue == null)
             {
                 MessageBox.Show("Выберите агента", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не выбран агент");
                 return;
             }
 
             if (comboBoxCounterpartyLender.SelectedValue == null)
             {
                 MessageBox.Show("Выберите контрагента-заимодавца", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не выбран контрагент");
                 return;
             }
 
             if (string.IsNullOrEmpty(textBoxPercent1.Text))
             {
                 MessageBox.Show("Заполните процент1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнен процент1");
                 return;
             }
 
@@ -109,23 +117,27 @@ namespace LoanAgreement
                 if (!char.IsNumber(c) && !(c == ','))
                 {
                     MessageBox.Show("Некорректные данные процента1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Введены некорректные данные процента1");
                     return;
                 }              
             }
             if (!Regex.IsMatch(textBoxPercent1.Text, @"[0-9]{1,3}[,][0-9]{2}\z"))
             {
                 MessageBox.Show("Процент1 должен содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Процент1 содержит не 2 цифры после запятой");
                 return;
             }
             if (Convert.ToDecimal(textBoxPercent1.Text) > 100 || Convert.ToDecimal(textBoxPercent1.Text) <= 0)
             {
                 MessageBox.Show("Некорретные данные процента1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Введены некорректные данные процента1");
                 return;
             }
 
             if (string.IsNullOrEmpty(textBoxPercent2.Text))
             {
                 MessageBox.Show("Заполните процент2", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнен процент2");
                 return;
             }
             foreach (char c in textBoxPercent2.Text)
@@ -133,23 +145,27 @@ namespace LoanAgreement
                 if (!char.IsNumber(c) && !(c == ','))
                 {
                     MessageBox.Show("Некорректные данные процента2", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Введены некорректные данные процента2");
                     return;
                 }
             }
             if (!Regex.IsMatch(textBoxPercent2.Text, @"[0-9]{1,3}[,][0-9]{2}\z"))
             {
                 MessageBox.Show("Процент2 должен содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Процент2 содержит не 2 цифры после запятой");
                 return;
             }
             if (Convert.ToDecimal(textBoxPercent2.Text) > 100 || Convert.ToDecimal(textBoxPercent2.Text) <= 0 || Convert.ToDecimal(textBoxPercent2.Text) >= Convert.ToDecimal(textBoxPercent1.Text))
             {
                 MessageBox.Show("Некорретные данные процента2, процент2 меньше процента1", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Введены некорректные данные процента2");
                 return;
             }
 
             if (string.IsNullOrEmpty(textBoxSum.Text))
             {
                 MessageBox.Show("Заполните сумму", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнена сумма");
                 return;
             }
 
@@ -158,35 +174,41 @@ namespace LoanAgreement
                 if (!char.IsNumber(c) && !(c == ','))
                 {
                     MessageBox.Show("Некорректные данные суммы", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Введены некорректные данные суммы");
                     return;
                 }
             }
             if (!Regex.IsMatch(textBoxSum.Text, @"[0-9]{1,3}[,][0-9]{2}\z"))
             {
                 MessageBox.Show("Сумма должна содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Сумма содержит не 2 цифры после запятой");
                 return;
             }
             if (Convert.ToDecimal(textBoxSum.Text) <= 0)
             {
                 MessageBox.Show("Некорретные данные суммы", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Введены некорректные данные суммы");
                 return;
             }
 
             if (dateTimePickerDateofconclusion.Value == null)
             {
                 MessageBox.Show("Заполните дату заключения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнена дата заключения договора");
                 return;
             }
 
             if (dateTimePickerDateofmaturity.Value == null)
             {
                 MessageBox.Show("Заполните дату истечения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнена дата истечения договора");
                 return;
             }
 
             if (dateTimePickerDateofmaturity.Value <= dateTimePickerDateofconclusion.Value)
             {
                 MessageBox.Show("Неверная дата истечения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Введена неверная дата истечения договора");
                 return;
             }
 
@@ -220,6 +242,9 @@ namespace LoanAgreement
                 }
 
                 MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                logger.Info($"Создан договор {loanAgreementId} от {dateTimePickerDateofconclusion.Value} до {dateTimePickerDateofmaturity.Value} " +
+                    $"на сумму {textBoxSum.Text}");
+                logger.Info($"Создана операция {OperationType.Заключение} по договору {loanAgreementId}");
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -227,6 +252,7 @@ namespace LoanAgreement
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error("Ошибка");
             }
         }
 

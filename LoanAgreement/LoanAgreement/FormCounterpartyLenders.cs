@@ -3,6 +3,7 @@ using LoanAgreementBusinessLogic.BusinessLogic;
 using System;
 using System.Windows.Forms;
 using Unity;
+using NLog;
 
 namespace LoanAgreement
 {
@@ -11,11 +12,13 @@ namespace LoanAgreement
         [Dependency]
         public new IUnityContainer Container { get; set; }
         private readonly CounterpartyLenderLogic logic;
+        private readonly Logger logger;
 
         public FormCounterpartyLenders(CounterpartyLenderLogic logic)
         {
             InitializeComponent();
             this.logic = logic;
+            logger = LogManager.GetCurrentClassLogger();
         }
 
         private void FormCounterpartyLenders_Load(object sender, EventArgs e)
@@ -39,6 +42,7 @@ namespace LoanAgreement
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error("Ошибка");
             }
         }
 
@@ -74,10 +78,12 @@ namespace LoanAgreement
                     try
                     {
                         logic.Delete(new CounterpartyLenderBindingModel { Id = id });
+                        logger.Info($"Удален контагент {id}");
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        logger.Error("Ошибка");
                     }
                     LoadData();
                 }

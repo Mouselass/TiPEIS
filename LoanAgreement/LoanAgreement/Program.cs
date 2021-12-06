@@ -5,12 +5,15 @@ using Unity;
 using Unity.Lifetime;
 using LoanAgreementBusinessLogic.Interfaces;
 using LoanAgreementBusinessLogic.BusinessLogic;
+using LoanAgreementBusinessLogic.ViewModels;
 using LoanAgreementDatabase.Implements;
 
 namespace LoanAgreement
 {
     static class Program
     {
+        public static UserViewModel User { get; set; }
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -33,6 +36,7 @@ namespace LoanAgreement
             currentContainer.RegisterType<IOperationStorage, OperationStorage>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<IPostingJournalStorage, PostingJournalStorage>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<IReportStorage, ReportStorage>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<IUserStorage, UserStorage>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<ChartOfAccountsLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<CounterpartyLenderLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<AgentLogic>(new HierarchicalLifetimeManager());
@@ -40,6 +44,8 @@ namespace LoanAgreement
             currentContainer.RegisterType<OperationLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<PostingJournalLogic>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<ReportLogic>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<BackUpAbstractLogic, BackUpLogic>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<UserLogic>(new HierarchicalLifetimeManager());
             return currentContainer;
         }
     }

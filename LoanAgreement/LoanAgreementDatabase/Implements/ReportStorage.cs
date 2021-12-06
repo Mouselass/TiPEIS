@@ -64,6 +64,23 @@ namespace LoanAgreementDatabase.Implements
                     BalancePeriodDebit = periodBalance.Where(rec => rec.Debitaccount == model.ChartOfAccount).Sum(rec => rec.Operation.Sum),
                     BalancePeriodCredit = periodBalance.Where(rec => rec.Creditaccount == model.ChartOfAccount).Sum(rec => rec.Operation.Sum)
                 };
+                
+                switch (reportPostingJournalViewModel.ChartOfAccounts)
+                {
+                    case "51":
+                        reportPostingJournalViewModel.BalanceStartPeriodDebit -= reportPostingJournalViewModel.BalanceStartPeriodCredit;
+                        reportPostingJournalViewModel.BalanceStartPeriodCredit = 0;
+                        reportPostingJournalViewModel.BalancePeriodDebit -= reportPostingJournalViewModel.BalancePeriodCredit;
+                        reportPostingJournalViewModel.BalancePeriodCredit = 0;
+                        break;
+                    case "67":
+                        reportPostingJournalViewModel.BalanceStartPeriodCredit -= reportPostingJournalViewModel.BalanceStartPeriodDebit;
+                        reportPostingJournalViewModel.BalanceStartPeriodDebit = 0;
+                        reportPostingJournalViewModel.BalancePeriodCredit -= reportPostingJournalViewModel.BalancePeriodDebit;
+                        reportPostingJournalViewModel.BalancePeriodDebit = 0;                        
+                        break;
+                }
+
                 reportPostingJournalViewModel.BalanceEndPeriodDebit = reportPostingJournalViewModel.BalanceStartPeriodDebit + reportPostingJournalViewModel.BalancePeriodDebit;
                 reportPostingJournalViewModel.BalanceEndPeriodCredit = reportPostingJournalViewModel.BalanceStartPeriodCredit + reportPostingJournalViewModel.BalancePeriodCredit;
 

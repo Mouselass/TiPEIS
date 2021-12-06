@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using Unity;
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 
 namespace LoanAgreement
 {
@@ -19,6 +20,7 @@ namespace LoanAgreement
         private readonly LoanAgreementLogic logicL;
         private readonly PostingJournalLogic logicP;
         private readonly ChartOfAccountsLogic logicC;
+        private readonly Logger logger;
 
         public FormOperations(OperationLogic logic, LoanAgreementLogic logicL, PostingJournalLogic logicP, ChartOfAccountsLogic logicC)
         {
@@ -29,6 +31,7 @@ namespace LoanAgreement
             this.logicC = logicC;
             comboBoxType.Items.Add(OperationType.Поступление);
             comboBoxType.Items.Add(OperationType.Закрытие);
+            logger = LogManager.GetCurrentClassLogger();
         }
 
         LoanAgreementViewModel view;
@@ -76,6 +79,7 @@ namespace LoanAgreement
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error("Ошибка");
             }
            
         }
@@ -85,24 +89,28 @@ namespace LoanAgreement
             if (comboBoxLoanAgreement.SelectedValue == null)
             {
                 MessageBox.Show("Выберите договор займа", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не выбран договор займа");
                 return;
             }
 
             if (comboBoxType.SelectedItem == null)
             {
                 MessageBox.Show("Выберите тип операции", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не выбран тип операции");
                 return;
             }
 
             if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && string.IsNullOrEmpty(textBoxPaymentSum.Text))
             {
                 MessageBox.Show("Заполните сумму поступления", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнена сумма поступления");
                 return;
             }
 
             if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && Convert.ToDecimal(textBoxPaymentSum.Text) > Convert.ToDecimal(textBoxRemaining.Text))
             {
                 MessageBox.Show("Сумма поступления должна быть не больше оставшейся", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Сумма поступления больше оставшейся");
                 return;
             }
 
@@ -110,6 +118,7 @@ namespace LoanAgreement
             if (conclusionView == null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
             {
                 MessageBox.Show("Договор должен быть заключен", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Договор не заключен");
                 return;
             }
 
@@ -117,12 +126,14 @@ namespace LoanAgreement
             if (closedView != null && comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString())
             {
                 MessageBox.Show("Договор должен быть не закрыт", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Договор закрыт");
                 return;
             }
 
             if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && Convert.ToDecimal(textBoxPaymentSum.Text) <= 0)
             {
                 MessageBox.Show("Сумма поступления должна быть положительной", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Сумма поступления не положительная");
                 return;
             }
 
@@ -133,6 +144,7 @@ namespace LoanAgreement
                     if (!char.IsNumber(c) && !(c == ','))
                     {
                         MessageBox.Show("Некорректные данные суммы платежа", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        logger.Warn("Введены некорректные данные суммы платежа");
                         return;
                     }
                 }
@@ -141,24 +153,28 @@ namespace LoanAgreement
             if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && !Regex.IsMatch(textBoxPaymentSum.Text, @"[0-9]{1,15}[,][0-9]{2}\z"))
             {
                 MessageBox.Show("Сумма платежа должна содержать 2 цифры после запятой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Сумма платежа содержит не 2 цифры после запятой");
                 return;
             }
 
             if (comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString() && Convert.ToDecimal(textBoxRemaining.Text) != 0)
             {
                 MessageBox.Show("Закрыт может быть договор с нулевой оставшейся суммой", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Закрыт может быть договор с нулевой оставшейся суммой");
                 return;
             }
 
             if (comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString() && conclusionView.Dateofoperation > dateTimePickerDateofconclusion.Value)
             {
                 MessageBox.Show("Дата закрытия не может быть раньше заключения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Дата закрытия не может быть раньше заключения");
                 return;
             }
 
             if (comboBoxType.SelectedItem.ToString() == OperationType.Поступление.ToString() && conclusionView.Dateofoperation > dateTimePickerDateofconclusion.Value)
             {
                 MessageBox.Show("Дата поступления не может быть раньше заключения", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Дата поступления не может быть раньше заключения");
                 return;
             }
 
@@ -191,6 +207,7 @@ namespace LoanAgreement
                                 Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
                                 Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
                             });
+                        logger.Info($"Создана операция {comboBoxType.SelectedItem} по договору {comboBoxLoanAgreement.SelectedValue}");
 
                         OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];
                         logicP.CreateOrUpdate(new PostingJournalBindingModel 
@@ -205,6 +222,7 @@ namespace LoanAgreement
                             Operationid = operationId,
                             Date = dateTimePickerDateofconclusion.Value
                         });
+                        logger.Info($"Создана проводка по операции {operationId} типа {comboBoxType.SelectedItem}");
                     }
 
                     if (view != null && comboBoxType.SelectedItem.ToString() == OperationType.Закрытие.ToString())
@@ -219,6 +237,7 @@ namespace LoanAgreement
                                     Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
                                     Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
                                 });
+                            logger.Info($"Создана операция {comboBoxType.SelectedItem} по договору {comboBoxLoanAgreement.SelectedValue}");
 
                             OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];
                             logicP.CreateOrUpdate(new PostingJournalBindingModel
@@ -250,6 +269,7 @@ namespace LoanAgreement
                                 Operationid = operationId,
                                 Date = dateTimePickerDateofconclusion.Value
                             });
+                            logger.Info($"Создана проводка по операции {operationId} типа {comboBoxType.SelectedItem}");
                         }
 
                         if (view.Dateofmaturity < dateTimePickerDateofconclusion.Value.Date)
@@ -262,6 +282,7 @@ namespace LoanAgreement
                                     Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
                                     Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
                                 });
+                            logger.Info($"Создана операция {comboBoxType.SelectedItem} по договору {comboBoxLoanAgreement.SelectedValue}");
 
                             OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];
                             logicP.CreateOrUpdate(new PostingJournalBindingModel
@@ -293,6 +314,7 @@ namespace LoanAgreement
                                 Operationid = operationId,
                                 Date = dateTimePickerDateofconclusion.Value
                             });
+                            logger.Info($"Создана проводка по операции {operationId} типа {comboBoxType.SelectedItem}");
                         }
                     }
                 }
@@ -326,6 +348,7 @@ namespace LoanAgreement
                                 Sum = Convert.ToDecimal(textBoxPaymentSum.Text),
                                 Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
                             });
+                        logger.Info($"Создана операция {comboBoxType.SelectedItem} по договору {comboBoxLoanAgreement.SelectedValue}");
 
                         OperationViewModel operation = logic.Read(new OperationBindingModel { Id = operationId })?[0];                        
                         if (postingJournal != null)
@@ -343,6 +366,7 @@ namespace LoanAgreement
                                 Operationid = operationId,
                                 Date = dateTimePickerDateofconclusion.Value
                             });
+                            logger.Info($"Создана проводка по операции {operationId} типа {comboBoxType.SelectedItem}");
                         }
                     }
 
@@ -359,6 +383,7 @@ namespace LoanAgreement
                                     Sum = view.Sumofloan + view.Sumofloan * (view.Percent2 / 100),
                                     Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
                                 });
+                            logger.Info($"Создана операция {comboBoxType.SelectedItem} по договору {comboBoxLoanAgreement.SelectedValue}");
 
                             PostingJournalViewModel postingJournalPercent = logicP.Read(new PostingJournalBindingModel { Operationid = updateId, Debitaccount = 4, Creditaccount = 2 })?[0];
                             if (postingJournalPercent != null)
@@ -399,6 +424,7 @@ namespace LoanAgreement
                                     Date = dateTimePickerDateofconclusion.Value
                                 });
                             }
+                            logger.Info($"Создана проводка по операции {operationId} типа {comboBoxType.SelectedItem}");
                         }
 
                         if (view.Dateofmaturity < dateTimePickerDateofconclusion.Value.Date)
@@ -412,6 +438,7 @@ namespace LoanAgreement
                                     Sum = view.Sumofloan + view.Sumofloan * (view.Percent1 / 100),
                                     Loanagreementid = (int)comboBoxLoanAgreement.SelectedValue
                                 });
+                            logger.Info($"Создана операция {comboBoxType.SelectedItem} по договору {comboBoxLoanAgreement.SelectedValue}");
 
                             PostingJournalViewModel postingJournalPercent = logicP.Read(new PostingJournalBindingModel { Operationid = updateId, Debitaccount = 4, Creditaccount = 2 })?[0];
                             if (postingJournalPercent != null)
@@ -452,6 +479,7 @@ namespace LoanAgreement
                                     Date = dateTimePickerDateofconclusion.Value
                                 });
                             }
+                            logger.Info($"Создана проводка по операции {operationId} типа {comboBoxType.SelectedItem}");
                         }
                     }
 
@@ -465,6 +493,7 @@ namespace LoanAgreement
             catch (DbUpdateException ex)
             {
                 MessageBox.Show(ex.InnerException.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error("Ошибка");
             }
         }
 
@@ -479,6 +508,7 @@ namespace LoanAgreement
                     if (operationView.Operationtype == OperationType.Заключение.ToString())
                     {
                         MessageBox.Show("Операцию заключения невозможно редактировать", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        logger.Warn("Операцию заключения невозможно редактировать");
                         return;
                     }
 
@@ -488,6 +518,7 @@ namespace LoanAgreement
                         if (closeOperation != null && operationView.Operationtype != OperationType.Закрытие.ToString())
                         {
                             MessageBox.Show("Нельзя изменить операцию закрытого договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            logger.Warn("Нельзя изменить операцию закрытого договора");
                             return;
                         }
                         comboBoxLoanAgreement.SelectedValue = operationView.Loanagreementid;
@@ -546,12 +577,14 @@ namespace LoanAgreement
                         if (operationView.Operationtype == OperationType.Заключение.ToString())
                         {
                             MessageBox.Show("Нельзя удалить операцию заключения договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            logger.Warn("Нельзя удалить операцию заключения договора");
                             return;
                         }
                         OperationViewModel closeOperation = logic.Read(new OperationBindingModel { Loanagreementid = operationView.Loanagreementid, Operationtype = OperationType.Закрытие.ToString() })?[0];
                         if (closeOperation != null && operationView.Operationtype != OperationType.Закрытие.ToString())
                         {
                             MessageBox.Show("Нельзя удалить операцию закрытого договора", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            logger.Warn("Нельзя удалить операцию закрытого договора");
                             return;
                         }
                         logic.Delete(new OperationBindingModel { Id = id });
@@ -570,11 +603,13 @@ namespace LoanAgreement
                                 Dateofconclusion = view.Dateofconclusion,
                                 Dateofmaturity = view.Dateofmaturity
                             });
+                            logger.Info($"Удалена операция {id}");
                         }
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        logger.Error("Ошибка");
                     }
                     LoadData();
                 }

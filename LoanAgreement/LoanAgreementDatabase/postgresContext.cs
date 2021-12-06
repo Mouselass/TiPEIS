@@ -26,6 +26,7 @@ namespace LoanAgreementDatabase
         public virtual DbSet<Loanagreement> Loanagreement { get; set; }
         public virtual DbSet<Operation> Operation { get; set; }
         public virtual DbSet<Postingjournal> Postingjournal { get; set; }
+        public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -37,6 +38,28 @@ namespace LoanAgreementDatabase
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Users>(entity =>
+            {
+                entity.ToTable("users");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Login)
+                    .IsRequired()
+                    .HasColumnName("login")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasColumnName("password")
+                    .HasMaxLength(255);
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasColumnName("role")
+                    .HasMaxLength(255);
+            });
+
             modelBuilder.Entity<Agent>(entity =>
             {
                 entity.ToTable("agent");

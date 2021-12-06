@@ -3,6 +3,7 @@ using LoanAgreementBusinessLogic.BusinessLogic;
 using System;
 using System.Windows.Forms;
 using Unity;
+using NLog;
 
 namespace LoanAgreement
 {
@@ -11,11 +12,13 @@ namespace LoanAgreement
         [Dependency]
         public new IUnityContainer Container { get; set; }
         private readonly LoanAgreementLogic logic;
+        private readonly Logger logger;
 
         public FormLoanAgreements(LoanAgreementLogic logic)
         {
             InitializeComponent();
             this.logic = logic;
+            logger = LogManager.GetCurrentClassLogger();
         }
 
         private void FormLoanAgreements_Load(object sender, EventArgs e)
@@ -41,6 +44,7 @@ namespace LoanAgreement
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error("Ошибка");
             }
         }
 
@@ -76,10 +80,12 @@ namespace LoanAgreement
                     try
                     {
                         logic.Delete(new LoanAgreementBindingModel { Id = id });
+                        logger.Info($"Удален договор {id}");
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        logger.Error("Ошибка");
                     }
                     LoadData();
                 }

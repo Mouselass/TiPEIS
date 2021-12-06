@@ -4,6 +4,7 @@ using LoanAgreementBusinessLogic.ViewModels;
 using System;
 using System.Windows.Forms;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 
 namespace LoanAgreement
 {
@@ -12,11 +13,13 @@ namespace LoanAgreement
         public int Id { set { id = value; } }
         private readonly AgentLogic logic;
         private int? id;
+        private readonly Logger logger;
 
         public FormAgent(AgentLogic logic)
         {
             InitializeComponent();
             this.logic = logic;
+            logger = LogManager.GetCurrentClassLogger();
         }
 
         AgentViewModel view;
@@ -38,6 +41,7 @@ namespace LoanAgreement
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Error("Ошибка");
                 }
             }
         }
@@ -47,6 +51,7 @@ namespace LoanAgreement
             if (string.IsNullOrEmpty(textBoxType.Text))
             {
                 MessageBox.Show("Заполните ФИО", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнено ФИО агента");
                 return;
             }
             foreach (char c in textBoxType.Text)
@@ -54,12 +59,14 @@ namespace LoanAgreement
                 if (!char.IsLetter(c) && !char.IsWhiteSpace(c) && !(c == '.'))
                 {
                     MessageBox.Show("Некорректные данные ФИО", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Введены некорректные данные ФИО агента");
                     return;
                 }
             }
             if (string.IsNullOrEmpty(textBoxPost.Text))
             {
                 MessageBox.Show("Заполните должность", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Warn("Не заполнена должность агента");
                 return;
             }
             foreach (char c in textBoxPost.Text)
@@ -67,6 +74,7 @@ namespace LoanAgreement
                 if (!char.IsLetter(c) && !char.IsWhiteSpace(c) && !(c == '-'))
                 {
                     MessageBox.Show("Некорректные данные должности", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    logger.Warn("Введены некорректные данные должности агента");
                     return;
                 }
             }
@@ -82,12 +90,14 @@ namespace LoanAgreement
 
 
                 MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                logger.Info($"Создан агент {textBoxType.Text} с должностью {textBoxPost.Text}");
                 DialogResult = DialogResult.OK;
                 Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                logger.Error("Ошибка");
             }
         }
 

@@ -39,9 +39,11 @@ namespace LoanAgreement
             this.отчетыToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ведомостьРасходовToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.оборотносальдоваяВедомостьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.создатьАрхивБДToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.labelName = new System.Windows.Forms.Label();
-            this.оборотносальдоваяВедомостьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.buttonAuthorize = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
@@ -52,7 +54,8 @@ namespace LoanAgreement
             this.справочникиToolStripMenuItem,
             this.журналОперацийToolStripMenuItem,
             this.журналПроводокToolStripMenuItem,
-            this.отчетыToolStripMenuItem});
+            this.отчетыToolStripMenuItem,
+            this.создатьАрхивБДToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(886, 24);
@@ -127,6 +130,20 @@ namespace LoanAgreement
             this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem.Text = "Ведомость сумм полученных займов за период";
             this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem.Click += new System.EventHandler(this.ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem_Click);
             // 
+            // оборотносальдоваяВедомостьToolStripMenuItem
+            // 
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Name = "оборотносальдоваяВедомостьToolStripMenuItem";
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Size = new System.Drawing.Size(366, 22);
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Text = "Оборотно-сальдовая ведомость";
+            this.оборотносальдоваяВедомостьToolStripMenuItem.Click += new System.EventHandler(this.оборотносальдоваяВедомостьToolStripMenuItem_Click);
+            // 
+            // создатьАрхивБДToolStripMenuItem
+            // 
+            this.создатьАрхивБДToolStripMenuItem.Name = "создатьАрхивБДToolStripMenuItem";
+            this.создатьАрхивБДToolStripMenuItem.Size = new System.Drawing.Size(115, 20);
+            this.создатьАрхивБДToolStripMenuItem.Text = "Создать архив БД";
+            this.создатьАрхивБДToolStripMenuItem.Click += new System.EventHandler(this.создатьАрхивБДToolStripMenuItem_Click);
+            // 
             // dataGridView
             // 
             this.dataGridView.BackgroundColor = System.Drawing.SystemColors.Control;
@@ -146,18 +163,22 @@ namespace LoanAgreement
             this.labelName.TabIndex = 2;
             this.labelName.Text = "План счетов";
             // 
-            // оборотносальдоваяВедомостьToolStripMenuItem
+            // buttonAuthorize
             // 
-            this.оборотносальдоваяВедомостьToolStripMenuItem.Name = "оборотносальдоваяВедомостьToolStripMenuItem";
-            this.оборотносальдоваяВедомостьToolStripMenuItem.Size = new System.Drawing.Size(366, 22);
-            this.оборотносальдоваяВедомостьToolStripMenuItem.Text = "Оборотно-сальдовая ведомость";
-            this.оборотносальдоваяВедомостьToolStripMenuItem.Click += new System.EventHandler(this.оборотносальдоваяВедомостьToolStripMenuItem_Click);
+            this.buttonAuthorize.Location = new System.Drawing.Point(802, 0);
+            this.buttonAuthorize.Name = "buttonAuthorize";
+            this.buttonAuthorize.Size = new System.Drawing.Size(84, 23);
+            this.buttonAuthorize.TabIndex = 3;
+            this.buttonAuthorize.Text = "Авторизация";
+            this.buttonAuthorize.UseVisualStyleBackColor = true;
+            this.buttonAuthorize.Click += new System.EventHandler(this.buttonAuthorize_Click);
             // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(886, 518);
+            this.Controls.Add(this.buttonAuthorize);
             this.Controls.Add(this.labelName);
             this.Controls.Add(this.dataGridView);
             this.Controls.Add(this.menuStrip);
@@ -188,6 +209,8 @@ namespace LoanAgreement
         private System.Windows.Forms.Label labelName;
         private System.Windows.Forms.ToolStripMenuItem ведомостьСуммПолученныхЗаймовЗаПериодToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem оборотносальдоваяВедомостьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem создатьАрхивБДToolStripMenuItem;
+        private System.Windows.Forms.Button buttonAuthorize;
     }
 }
 
