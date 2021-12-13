@@ -709,7 +709,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Sum(Fields!BalanceStartPeriodCredit.Value, "DataSetPostingJournal")</Value>
+                    <Value>=Sum(Fields!BalancePeriodDebit.Value, "DataSetPostingJournal")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>
@@ -742,7 +742,7 @@
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=Sum(Fields!BalanceStartPeriodDebit.Value, "DataSetPostingJournal")</Value>
+                    <Value>=Sum(Fields!BalanceStartPeriodCredit.Value, "DataSetPostingJournal")</Value>
                     <Style />
                   </TextRun>
                 </TextRuns>

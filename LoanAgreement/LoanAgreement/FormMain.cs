@@ -33,6 +33,7 @@ namespace LoanAgreement
 
         private void LoadData()
         {
+            labelRole.Text = "Неавторизовано";
             try
             {
                 var list = logic.Read(null);
@@ -198,6 +199,10 @@ namespace LoanAgreement
         {
             var form = Container.Resolve<FormAuthorize>();
             form.ShowDialog();
+            if (Program.User != null)
+            {
+                labelRole.Text = Program.User.Role;
+            }           
         }
     }
 }

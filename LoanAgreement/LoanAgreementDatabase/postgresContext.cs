@@ -32,7 +32,7 @@ namespace LoanAgreementDatabase
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=Ivan");
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=postgres;Username=Ivan;");
             }
         }
 

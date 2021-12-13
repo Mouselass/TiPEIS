@@ -44,6 +44,7 @@ namespace LoanAgreement
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.labelName = new System.Windows.Forms.Label();
             this.buttonAuthorize = new System.Windows.Forms.Button();
+            this.labelRole = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
@@ -173,11 +174,20 @@ namespace LoanAgreement
             this.buttonAuthorize.UseVisualStyleBackColor = true;
             this.buttonAuthorize.Click += new System.EventHandler(this.buttonAuthorize_Click);
             // 
+            // labelRole
+            // 
+            this.labelRole.AutoSize = true;
+            this.labelRole.Location = new System.Drawing.Point(691, 5);
+            this.labelRole.Name = "labelRole";
+            this.labelRole.Size = new System.Drawing.Size(0, 13);
+            this.labelRole.TabIndex = 4;
+            // 
             // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(886, 518);
+            this.Controls.Add(this.labelRole);
             this.Controls.Add(this.buttonAuthorize);
             this.Controls.Add(this.labelName);
             this.Controls.Add(this.dataGridView);
@@ -211,6 +221,7 @@ namespace LoanAgreement
         private System.Windows.Forms.ToolStripMenuItem оборотносальдоваяВедомостьToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem создатьАрхивБДToolStripMenuItem;
         private System.Windows.Forms.Button buttonAuthorize;
+        private System.Windows.Forms.Label labelRole;
     }
 }
 

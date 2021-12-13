@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using LoanAgreementBusinessLogic.BindingModels;
 using LoanAgreementBusinessLogic.BusinessLogic;
+using LoanAgreementBusinessLogic.Enum;
 using Unity;
 using NLog;
 
@@ -60,8 +61,15 @@ namespace LoanAgreement
 
         private void buttonRegister_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormRegister>();
-            form.ShowDialog();
+            if (Program.User != null && Program.User.Role == UserRole.Администратор.ToString())
+            {
+                var form = Container.Resolve<FormRegister>();
+                form.ShowDialog();
+            }
+            else
+            {
+                MessageBox.Show("Регистрировать пользователей может только администратор", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

@@ -60,6 +60,7 @@ namespace LoanAgreement
             // 
             this.textBoxPassword.Location = new System.Drawing.Point(15, 84);
             this.textBoxPassword.Name = "textBoxPassword";
+            this.textBoxPassword.PasswordChar = '*';
             this.textBoxPassword.Size = new System.Drawing.Size(162, 20);
             this.textBoxPassword.TabIndex = 25;
             // 

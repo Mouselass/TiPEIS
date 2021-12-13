@@ -81,7 +81,7 @@ namespace LoanAgreementDatabase.Implements
                 var element = context.Users.FirstOrDefault(rec => rec.Id == model.Id);
                 if (element == null)
                 {
-                    throw new Exception("Агент не найден");
+                    throw new Exception("Пользователь не найден");
                 }
                 CreateModel(model, element);
                 context.SaveChanges();
@@ -100,7 +100,7 @@ namespace LoanAgreementDatabase.Implements
                 }
                 else
                 {
-                    throw new Exception("Агент не найден");
+                    throw new Exception("Пользователь не найден");
                 }
             }
         }
